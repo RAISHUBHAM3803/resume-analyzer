@@ -1,0 +1,63 @@
+.history-section { padding-top: 100px; min-height: 100vh; }
+.history-container { max-width: var(--container-max); margin: 0 auto; padding: 40px 24px 80px; }
+
+.history-top-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 32px; gap: 16px; }
+
+.history-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: none; border: none; color: var(--text-secondary);
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  font-family: var(--font-primary); padding: 8px 0;
+  transition: color var(--transition-fast);
+}
+
+.delete-actions { display: flex; align-items: center; gap: 10px; background: var(--bg-glass-strong); padding: 6px 12px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); }
+.delete-lbl { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; margin-right: 4px; }
+.delete-btn {
+  background: none; border: 1px solid var(--border-subtle); color: var(--text-secondary);
+  padding: 4px 10px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all var(--transition-fast);
+}
+.delete-btn:hover:not(:disabled) { background: var(--border-subtle); color: var(--text-primary); }
+.delete-btn--danger:hover:not(:disabled) { background: rgba(255,107,107,0.15); color: var(--accent-red); border-color: rgba(255,107,107,0.3); }
+.delete-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.history-back:hover { color: var(--text-primary); }
+
+.history-hdr { text-align: center; margin-bottom: 48px; }
+.history-hdr-icon {
+  width: 56px; height: 56px; border-radius: var(--radius-lg);
+  background: var(--gradient-hero); display: flex; align-items: center; justify-content: center;
+  color: white; margin: 0 auto 20px; box-shadow: 0 0 40px rgba(108,99,255,0.2);
+}
+.history-hdr h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+.history-hdr p { color: var(--text-secondary); font-size: 15px; }
+
+.history-loading, .history-error, .history-empty {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 60px 20px; text-align: center; color: var(--text-secondary);
+  background: var(--bg-card); border-radius: var(--radius-xl); border: 1px dashed var(--border-medium);
+}
+.history-error { color: var(--accent-red); background: rgba(255,107,107,0.05); border-color: rgba(255,107,107,0.2); border-style: solid; }
+.history-empty { flex-direction: column; }
+.empty-icon { color: var(--border-medium); margin-bottom: 12px; }
+
+.history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.history-card {
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg); padding: 24px;
+  transition: all var(--transition-base); display: flex; flex-direction: column; gap: 16px;
+}
+.history-card:hover { border-color: var(--accent-primary); transform: translateY(-3px); box-shadow: var(--shadow-glow); }
+
+.hcard-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.hcard-date { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.hcard-score { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; font-family: var(--font-mono); }
+.score-high { background: rgba(0,212,170,0.15); color: var(--accent-green); border: 1px solid rgba(0,212,170,0.3); }
+.score-mid { background: rgba(255,179,71,0.15); color: var(--accent-orange); border: 1px solid rgba(255,179,71,0.3); }
+.score-low { background: rgba(255,107,107,0.15); color: var(--accent-red); border: 1px solid rgba(255,107,107,0.3); }
+
+.hcard-file { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--bg-glass-strong); border-radius: var(--radius-md); }
+.file-icon { color: var(--accent-light); }
+.file-name { font-size: 14px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.hcard-skills { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
