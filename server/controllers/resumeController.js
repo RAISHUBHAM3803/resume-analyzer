@@ -16,6 +16,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage }).single("resume");
 
+const { validateResumeText } = require("../utils/validator");
+
 // Controller
 const uploadResume = (req, res) => {
   upload(req, res, async (err) => {
@@ -28,6 +30,13 @@ const uploadResume = (req, res) => {
 
       const filePath = req.file.path;
       const text = await parsePDF(filePath);
+      
+      // Validate if text looks like a resume
+      const validation = validateResumeText(text);
+      if (!validation.isValid) {
+        return res.status(400).json({ error: validation.reason });
+      }
+
       const result = analyzeResume(text);
 
       const jobDescription = req.body.jobDescription || "";
