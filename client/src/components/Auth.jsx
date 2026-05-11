@@ -120,22 +120,6 @@ function Auth({ onAuthSuccess, goHome }) {
               </div>
             </div>
 
-            <div className="verification-widget">
-              <div className="success-circle">
-                <CheckCircle2 size={16} />
-              </div>
-              <span className="verification-text">Verification Successful!</span>
-              <div className="cf-branding">
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/9/94/Cloudflare_Logo.png" 
-                  alt="Cloudflare" 
-                  className="cf-logo"
-                />
-                <div className="cf-footer">
-                  <span>Privacy</span> • <span>Help</span>
-                </div>
-              </div>
-            </div>
 
             <button type="submit" className="auth-btn" disabled={loading}>
               {loading ? (
