@@ -11,6 +11,11 @@ function UploadForm({ onResult, onBack }) {
   const [error, setError] = useState("");
   const [progress, setProgress] = useState(0);
   const inputRef = useRef(null);
+  const sectionRef = useRef(null);
+
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   const onDrag = (e) => {
     e.preventDefault(); e.stopPropagation();

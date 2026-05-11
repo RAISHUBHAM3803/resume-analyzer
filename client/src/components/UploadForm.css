@@ -1,4 +1,4 @@
-.upload-section { padding-top: 100px; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; }
+.upload-section { padding-top: 120px; padding-bottom: 60px; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
 .upload-container { max-width: 640px; width: 100%; margin: 0 auto; padding: 40px 24px 80px; }
 
 .upload-back {
