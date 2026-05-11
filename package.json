@@ -4,6 +4,10 @@
   "private": true,
   "scripts": {
     "build": "npm install --prefix client && npm run build --prefix client && npm install --prefix server",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "render-postbuild": "cp -R client/dist server/dist"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
