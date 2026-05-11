@@ -51,14 +51,16 @@ function App() {
         <div className="orb orb-3"></div>
       </div>
 
-      <Navbar 
-        onLogoClick={goHome} 
-        onGetStarted={goUpload} 
-        onHistoryClick={goHistory} 
-        user={user} 
-        onLogout={handleLogout} 
-        onLoginClick={goAuth} 
-      />
+      {view !== "auth" && (
+        <Navbar 
+          onLogoClick={goHome} 
+          onGetStarted={goUpload} 
+          onHistoryClick={goHistory} 
+          user={user} 
+          onLogout={handleLogout} 
+          onLoginClick={goAuth} 
+        />
+      )}
 
       <main className="main-content">
         {view === "home" && <HeroSection onGetStarted={goUpload} />}
