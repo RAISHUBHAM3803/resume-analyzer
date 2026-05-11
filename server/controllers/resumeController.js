@@ -8,7 +8,10 @@ const generateFeedback = require("../utils/aiFeedback");
 
 // Storage config
 const storage = multer.diskStorage({
-  destination: "./uploads/",
+  destination: function (req, file, cb) {
+    const uploadPath = path.join(__dirname, "..", "uploads");
+    cb(null, uploadPath);
+  },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
   },
