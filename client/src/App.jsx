@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import UploadForm from "./components/UploadForm";
@@ -19,6 +19,11 @@ function App() {
     const token = localStorage.getItem("token");
     if (token) setUser({ token });
   }, []);
+
+  // Scroll to top whenever the view changes (before paint)
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [view]);
 
   const goHome = () => { setView("home"); setResult(null); };
   const goUpload = () => { 

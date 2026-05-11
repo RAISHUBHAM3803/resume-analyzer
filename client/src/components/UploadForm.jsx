@@ -13,9 +13,7 @@ function UploadForm({ onResult, onBack }) {
   const inputRef = useRef(null);
   const sectionRef = useRef(null);
 
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+
 
   const onDrag = (e) => {
     e.preventDefault(); e.stopPropagation();
