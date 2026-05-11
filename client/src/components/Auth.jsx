@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { login, register } from "../services/api";
-import { Mail, Lock, User, Sparkles, ArrowRight, AlertCircle } from "lucide-react";
+import { Mail, Lock, User, Sparkles, ArrowRight, AlertCircle, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import "./Auth.css";
 
 function Auth({ onAuthSuccess, goHome }) {
   const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,7 @@ function Auth({ onAuthSuccess, goHome }) {
       localStorage.setItem("token", res.data.token);
       onAuthSuccess(res.data);
     } catch (err) {
-      setError(err.response?.data?.error || "Authentication failed. Please try again.");
+      setError(err.response?.data?.error || "Authentication failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -39,43 +40,121 @@ function Auth({ onAuthSuccess, goHome }) {
   return (
     <section className="auth-section fade-in">
       <div className="auth-container">
-        <button className="auth-back" onClick={goHome}>Cancel</button>
+        <button className="auth-back" onClick={goHome}>
+          <ArrowRight size={14} style={{ transform: "rotate(180deg)" }} /> Back to home
+        </button>
+        
         <div className="auth-card">
           <div className="auth-hdr">
             <div className="auth-icon"><Sparkles size={24} /></div>
-            <h2>{isLogin ? "Welcome Back" : "Create Account"}</h2>
-            <p>{isLogin ? "Log in to view your resume analysis history." : "Sign up to start tracking your resume progress."}</p>
+            <h2>{isLogin ? "Sign in" : "Create Account"}</h2>
+            <p>
+              {isLogin 
+                ? "Enter your credentials to access your insights" 
+                : "Join thousands of job seekers optimizing their careers."}
+            </p>
           </div>
 
-          {error && <div className="auth-error"><AlertCircle size={16} /> {error}</div>}
+          {error && (
+            <div className="auth-error">
+              <AlertCircle size={16} /> {error}
+            </div>
+          )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
             {!isLogin && (
               <div className="input-group">
-                <div className="input-icon"><User size={18} /></div>
-                <input type="text" name="name" placeholder="Full Name" required value={formData.name} onChange={handleChange} />
+                <label className="input-label">Full Name</label>
+                <div className="input-wrapper">
+                  <User className="input-icon-left" size={18} />
+                  <input 
+                    type="text" 
+                    name="name" 
+                    placeholder="John Doe" 
+                    className="auth-input"
+                    required 
+                    value={formData.name} 
+                    onChange={handleChange} 
+                  />
+                </div>
               </div>
             )}
             
             <div className="input-group">
-              <div className="input-icon"><Mail size={18} /></div>
-              <input type="email" name="email" placeholder="Email Address" required value={formData.email} onChange={handleChange} />
+              <label className="input-label">Email</label>
+              <div className="input-wrapper">
+                <Mail className="input-icon-left" size={18} />
+                <input 
+                  type="email" 
+                  name="email" 
+                  placeholder="you@example.com" 
+                  className="auth-input"
+                  required 
+                  value={formData.email} 
+                  onChange={handleChange} 
+                />
+              </div>
             </div>
 
             <div className="input-group">
-              <div className="input-icon"><Lock size={18} /></div>
-              <input type="password" name="password" placeholder="Password" required minLength="6" value={formData.password} onChange={handleChange} />
+              <label className="input-label">Password</label>
+              <div className="input-wrapper">
+                <Lock className="input-icon-left" size={18} />
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  name="password" 
+                  placeholder="••••••••" 
+                  className="auth-input"
+                  required 
+                  minLength="6" 
+                  value={formData.password} 
+                  onChange={handleChange} 
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="verification-widget">
+              <div className="success-circle">
+                <CheckCircle2 size={16} />
+              </div>
+              <span className="verification-text">Verification Successful!</span>
+              <div className="cf-branding">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/9/94/Cloudflare_Logo.png" 
+                  alt="Cloudflare" 
+                  className="cf-logo"
+                />
+                <div className="cf-footer">
+                  <span>Privacy</span> • <span>Help</span>
+                </div>
+              </div>
             </div>
 
             <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? <span className="spinner"></span> : <>{isLogin ? "Log In" : "Sign Up"} <ArrowRight size={18} /></>}
+              {loading ? (
+                <span className="spinner"></span>
+              ) : (
+                <>
+                  {isLogin ? "Sign in" : "Get Started"} <ArrowRight size={18} />
+                </>
+              )}
             </button>
           </form>
 
           <div className="auth-footer">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-            <button className="auth-switch" onClick={() => { setIsLogin(!isLogin); setError(""); }}>
-              {isLogin ? "Sign up" : "Log in"}
+            {isLogin ? "New here?" : "Already have an account?"}
+            <button 
+              className="auth-switch" 
+              onClick={() => { setIsLogin(!isLogin); setError(""); }}
+            >
+              {isLogin ? "Create an account" : "Sign in"}
             </button>
           </div>
         </div>
