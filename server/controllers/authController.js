@@ -52,4 +52,19 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const getCurrentUser = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Not authorized" });
+    }
+    res.json({
+      _id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, getCurrentUser };

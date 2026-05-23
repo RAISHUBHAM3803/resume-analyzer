@@ -12,4 +12,7 @@ const resumeSchema = new mongoose.Schema({
   },
 });
 
+// Compound index for user history queries
+resumeSchema.index({ user: 1, createdAt: -1 });
+
 module.exports = mongoose.model("Resume", resumeSchema);

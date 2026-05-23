@@ -1,5 +1,6 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 const parsePDF = require("../utils/parser");
 const analyzeResume = require("../utils/scorer");
 const Resume = require("../models/Resume");
@@ -17,21 +18,35 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage }).single("resume");
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB file size limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "application/pdf" || path.extname(file.originalname).toLowerCase() === ".pdf") {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF files are allowed."), false);
+    }
+  }
+}).single("resume");
 
 const { validateResumeText } = require("../utils/validator");
 
 // Controller
 const uploadResume = (req, res) => {
   upload(req, res, async (err) => {
-    if (err) return res.status(500).json({ error: err.message });
+    if (err) {
+      const isMulterError = err instanceof multer.MulterError;
+      return res.status(400).json({ error: isMulterError ? `Upload limit error: ${err.message}` : err.message });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: "No resume file was uploaded." });
+    }
+
+    const filePath = req.file.path;
 
     try {
-      if (!req.file) {
-        return res.status(400).json({ error: "No resume file was uploaded." });
-      }
-
-      const filePath = req.file.path;
       const text = await parsePDF(filePath);
       
       // Validate if text looks like a resume
@@ -74,6 +89,11 @@ const uploadResume = (req, res) => {
 
     } catch (error) {
       res.status(500).json({ error: error.message });
+    } finally {
+      // Clean up uploaded file
+      fs.unlink(filePath, (unlinkErr) => {
+        if (unlinkErr) console.error(`Failed to delete temp file ${filePath}:`, unlinkErr.message);
+      });
     }
   });
 };

@@ -2,14 +2,15 @@ const { techSkills } = require("./skillsDictionary");
 
 const educationKeywords = [
   "B.Tech", "M.Tech", "Bachelor", "Master", "Computer Science", "PhD", "Degree", "University", 
-  "College", "B.E", "B.S", "M.S", "BCA", "MCA", "B.Com", "M.Com", "MBA", "School", "Diploma"
+  "College", "B.E", "B.S", "M.S", "BCA", "MCA", "B.Com", "M.Com", "MBA", "School", "Diploma",
+  "BSc", "MSc", "Bachelor of Science", "Master of Science"
 ];
 
 const actionWords = ["developed", "built", "designed", "implemented", "created", "spearheaded", "managed", "optimized", "orchestrated"];
 
 const contactPatterns = {
   email: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
-  phone: /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/,
+  phone: /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}|\+?\d{10,13}/,
   linkedin: /linkedin\.com\/in\/[a-zA-Z0-9-]+/
 };
 
@@ -26,12 +27,43 @@ const extractSkills = (text) => {
 // Experience detection
 const extractExperienceScore = (text) => {
   let score = 0;
-  const match = text.match(/(\d+)\+?\s*(years|yrs)/i);
+  
+  // 1. Explicit years of experience
+  const match = text.match(/(\d+)\+?\s*(years|yrs)\s*(of)?\s*(experience|exp)?/i);
   if (match) {
     const years = parseInt(match[1]);
-    score = Math.min(years * 20, 100);
-  } else if (text.toLowerCase().includes("intern")) {
-    score = 40;
+    score = Math.min(years * 15 + 40, 100);
+  } 
+  
+  // 2. Year ranges (e.g. 2018 - 2021)
+  if (score === 0) {
+    const yearMatches = text.match(/\b(20\d{2})\b/g);
+    if (yearMatches && yearMatches.length >= 2) {
+      const yearsList = yearMatches.map(Number);
+      const minYear = Math.min(...yearsList);
+      const maxYear = Math.max(...yearsList);
+      const span = maxYear - minYear;
+      if (span > 0) {
+        score = Math.min(span * 15 + 30, 100);
+      }
+    }
+  }
+
+  // 3. Fallbacks
+  if (score === 0) {
+    const lower = text.toLowerCase();
+    const hasWorkSection = ["experience", "employment", "history", "work", "job"].some(k => lower.includes(k));
+    const hasJobTitle = ["developer", "engineer", "designer", "manager", "analyst"].some(t => lower.includes(t));
+    
+    if (hasWorkSection && hasJobTitle) {
+      score = 70;
+    } else if (lower.includes("intern")) {
+      score = 50;
+    } else if (lower.includes("student") || lower.includes("graduate")) {
+      score = 40;
+    } else {
+      score = 30;
+    }
   }
   return score;
 };
@@ -66,7 +98,7 @@ const extractEducationScore = (text) => {
     }
   });
 
-  if (text.match(/\b(B\.E|B\.S|M\.S|B\.Tech|M\.Tech|BCA|MCA|MBA)\b/i)) {
+  if (text.match(/\b(B\.E|B\.S|M\.S|B\.Tech|M\.Tech|BCA|MCA|MBA|BSc|MSc)\b/i)) {
     score += 50;
   }
 

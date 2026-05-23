@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect, lazy, Suspense } from "react";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
-import UploadForm from "./components/UploadForm";
-import Dashboard from "./components/Dashboard";
-import History from "./components/History";
-import Auth from "./components/Auth";
 import Footer from "./components/Footer";
+import { getMe } from "./services/api";
 import "./App.css";
+
+const UploadForm = lazy(() => import("./components/UploadForm"));
+const Dashboard = lazy(() => import("./components/Dashboard"));
+const History = lazy(() => import("./components/History"));
+const Auth = lazy(() => import("./components/Auth"));
 
 function App() {
   const [view, setView] = useState("home");
@@ -14,10 +16,19 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Simple check: if token exists, we consider user logged in for UI purposes.
-    // In a real app, you'd fetch the /me endpoint to validate token.
-    const token = localStorage.getItem("token");
-    if (token) setUser({ token });
+    const checkAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const res = await getMe();
+          setUser({ ...res.data, token });
+        } catch (err) {
+          localStorage.removeItem("token");
+          setUser(null);
+        }
+      }
+    };
+    checkAuth();
   }, []);
 
   // Scroll to top whenever the view changes (before paint)
@@ -68,11 +79,18 @@ function App() {
       )}
 
       <main className="main-content">
-        {view === "home" && <HeroSection onGetStarted={goUpload} />}
-        {view === "auth" && <Auth onAuthSuccess={handleAuthSuccess} goHome={goHome} />}
-        {view === "upload" && <UploadForm onResult={showResults} onBack={goHome} />}
-        {view === "dashboard" && result && <Dashboard data={result} onReset={goHome} />}
-        {view === "history" && <History onBack={goHome} />}
+        <Suspense fallback={
+          <div className="app-loader">
+            <div className="spinner"></div>
+            <p>Loading...</p>
+          </div>
+        }>
+          {view === "home" && <HeroSection onGetStarted={goUpload} />}
+          {view === "auth" && <Auth onAuthSuccess={handleAuthSuccess} goHome={goHome} />}
+          {view === "upload" && <UploadForm onResult={showResults} onBack={goHome} />}
+          {view === "dashboard" && result && <Dashboard data={result} onReset={goHome} />}
+          {view === "history" && <History onBack={goHome} />}
+        </Suspense>
       </main>
 
       <Footer />
