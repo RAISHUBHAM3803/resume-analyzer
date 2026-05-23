@@ -15,6 +15,8 @@ function UploadForm({ onResult, onBack }) {
 
 
 
+  const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
   const onDrag = (e) => {
     e.preventDefault(); e.stopPropagation();
     if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
@@ -24,12 +26,39 @@ function UploadForm({ onResult, onBack }) {
   const onDrop = (e) => {
     e.preventDefault(); e.stopPropagation(); setDragActive(false); setError("");
     const f = e.dataTransfer.files[0];
-    if (f && f.type === "application/pdf") setFile(f);
-    else setError("Please upload a PDF file only.");
+    if (!f) return;
+    if (f.type !== "application/pdf" && !f.name.toLowerCase().endsWith(".pdf")) {
+      setError("Please upload a PDF file only.");
+    } else if (f.size > MAX_SIZE) {
+      setError("File size exceeds the 10MB limit. Please upload a smaller file.");
+    } else {
+      setFile(f);
+    }
   };
 
-  const onFileChange = (e) => { setError(""); if (e.target.files[0]) setFile(e.target.files[0]); };
+  const onFileChange = (e) => {
+    setError("");
+    const f = e.target.files[0];
+    if (!f) return;
+    if (f.type !== "application/pdf" && !f.name.toLowerCase().endsWith(".pdf")) {
+      setError("Please upload a PDF file only.");
+      if (inputRef.current) inputRef.current.value = "";
+    } else if (f.size > MAX_SIZE) {
+      setError("File size exceeds the 10MB limit. Please upload a smaller file.");
+      if (inputRef.current) inputRef.current.value = "";
+    } else {
+      setFile(f);
+    }
+  };
+
   const removeFile = () => { setFile(null); if (inputRef.current) inputRef.current.value = ""; };
+
+  const handleJobDescChange = (e) => {
+    const val = e.target.value;
+    if (val.length <= 5000) {
+      setJobDesc(val);
+    }
+  };
 
   const fmtSize = (b) => {
     if (b < 1024) return b + " B";
@@ -112,9 +141,9 @@ function UploadForm({ onResult, onBack }) {
                 <textarea
                   className="upload-textarea"
                   placeholder="Paste the job description here for a more accurate skills match..."
-                  value={jobDesc} onChange={(e) => setJobDesc(e.target.value)} rows={6}
+                  value={jobDesc} onChange={handleJobDescChange} rows={6}
                 />
-                {jobDesc && <div className="textarea-count">{jobDesc.length} chars</div>}
+                {jobDesc && <div className="textarea-count">{jobDesc.length} / 5000 chars</div>}
               </div>
             </div>
 

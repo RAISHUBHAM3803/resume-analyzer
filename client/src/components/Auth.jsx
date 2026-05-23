@@ -20,6 +20,20 @@ function Auth({ onAuthSuccess, goHome }) {
     setLoading(true);
     setError("");
 
+    // Client-side password validation on registration for better UX
+    if (!isLogin) {
+      if (formData.password.length < 8) {
+        setError("Password must be at least 8 characters.");
+        setLoading(false);
+        return;
+      }
+      if (!/[a-zA-Z]/.test(formData.password) || !/[0-9]/.test(formData.password)) {
+        setError("Password must contain at least one letter and one number.");
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       let res;
       if (isLogin) {
@@ -106,7 +120,7 @@ function Auth({ onAuthSuccess, goHome }) {
                   placeholder="••••••••" 
                   className="auth-input"
                   required 
-                  minLength="6" 
+                  minLength={isLogin ? "6" : "8"} 
                   value={formData.password} 
                   onChange={handleChange} 
                 />
@@ -118,6 +132,9 @@ function Auth({ onAuthSuccess, goHome }) {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              {!isLogin && (
+                <span className="input-hint">Must be at least 8 characters with 1 letter & 1 number</span>
+              )}
             </div>
 
 

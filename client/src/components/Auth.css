@@ -251,3 +251,10 @@
     background: #0a0a0a;
   }
 }
+
+.input-hint {
+  font-size: 11px;
+  color: #777;
+  margin-top: 4px;
+  margin-left: 4px;
+}

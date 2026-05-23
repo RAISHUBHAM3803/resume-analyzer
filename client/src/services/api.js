@@ -17,7 +17,7 @@ API.interceptors.request.use((req) => {
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !error.config?.url?.includes("/auth/login")) {
       // Token is expired or invalid — clear it so the user is logged out
       localStorage.removeItem("token");
       // Reload to let App.jsx re-initialize in a logged-out state
