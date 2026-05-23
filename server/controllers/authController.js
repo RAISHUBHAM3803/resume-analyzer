@@ -48,11 +48,20 @@ const registerUser = async (req, res) => {
     }
 
     const user = await User.create({ name: trimmedName, email: email.toLowerCase(), password });
+    const token = generateToken(user._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
+      token,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -65,11 +74,20 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
+      const token = generateToken(user._id);
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
       res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
-        token: generateToken(user._id),
+        token,
       });
     } else {
       res.status(401).json({ error: "Invalid email or password" });
@@ -77,6 +95,15 @@ const loginUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+const logoutUser = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  res.json({ message: "Logged out successfully" });
 };
 
 const getCurrentUser = async (req, res) => {
@@ -94,4 +121,4 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getCurrentUser };
+module.exports = { registerUser, loginUser, logoutUser, getCurrentUser };

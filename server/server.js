@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const compression = require("compression");
 const connectDB = require("./config/db");
 const fs = require("fs");
 
@@ -60,7 +61,10 @@ app.use("/api", cors({
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: false, limit: "10kb" }));
 
-// 4. Rate limiter: cap auth attempts at 20 requests per 15 min per IP
+// 4. Response compression: Gzip/Brotli for all responses
+app.use(compression());
+
+// 5. Rate limiter: cap auth attempts at 20 requests per 15 min per IP
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 20,
@@ -69,7 +73,7 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// 5. Upload rate limiter: cap resume uploads at 10 per 15 min
+// 6. Upload rate limiter: cap resume uploads at 10 per 15 min
 const uploadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,

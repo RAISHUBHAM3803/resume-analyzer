@@ -2,25 +2,18 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: import.meta.env.PROD ? "/api" : "http://localhost:3000/api",
-});
-
-// ── Request interceptor: attach token to every request ──────────────────
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
-  return req;
+  // Send HTTPOnly cookies automatically with every cross-origin request
+  withCredentials: true,
 });
 
 // ── Response interceptor: auto-logout on 401 Unauthorized ───────────────
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && !error.config?.url?.includes("/auth/login")) {
-      // Token is expired or invalid — clear it so the user is logged out
-      localStorage.removeItem("token");
-      // Reload to let App.jsx re-initialize in a logged-out state
+    const url = error.config?.url ?? "";
+    // Skip /auth/me so a guest page load doesn't trigger an infinite reload
+    if (error.response?.status === 401 && !url.includes("/auth/login") && !url.includes("/auth/me")) {
+      // Cookie expired or invalid — reload to let App.jsx re-initialize as guest
       window.location.reload();
     }
     return Promise.reject(error);
@@ -29,12 +22,13 @@ API.interceptors.response.use(
 
 export const login = (data) => API.post("/auth/login", data);
 export const register = (data) => API.post("/auth/register", data);
+export const logout = () => API.post("/auth/logout");
 export const getMe = () => API.get("/auth/me");
 
 export const uploadResume = (formData) =>
   API.post("/resume/upload", formData);
 
-export const getHistory = () => 
+export const getHistory = () =>
   API.get("/resume/history");
 
 export const deleteHistory = (timeframe) =>

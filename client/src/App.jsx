@@ -2,7 +2,7 @@ import { useState, useEffect, useLayoutEffect, lazy, Suspense } from "react";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import Footer from "./components/Footer";
-import { getMe } from "./services/api";
+import { getMe, logout } from "./services/api";
 import "./App.css";
 
 const UploadForm = lazy(() => import("./components/UploadForm"));
@@ -16,16 +16,14 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Cookie is managed by the browser — just call /auth/me unconditionally
     const checkAuth = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          const res = await getMe();
-          setUser({ ...res.data, token });
-        } catch {
-          localStorage.removeItem("token");
-          setUser(null);
-        }
+      try {
+        const res = await getMe();
+        setUser(res.data);
+      } catch {
+        // Not logged in — stay as guest
+        setUser(null);
       }
     };
     checkAuth();
@@ -53,10 +51,15 @@ function App() {
     setView("home");
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-    setView("home");
+  const handleLogout = async () => {
+    try {
+      await logout(); // clears HTTPOnly cookie on server
+    } catch {
+      // proceed with logout even if request fails
+    } finally {
+      setUser(null);
+      setView("home");
+    }
   };
 
   return (
