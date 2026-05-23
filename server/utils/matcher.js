@@ -1,9 +1,10 @@
 const { techSkills } = require("./skillsDictionary");
 
 const educationKeywords = [
-  "B.Tech", "M.Tech", "Bachelor", "Master", "Computer Science", "PhD", "Degree", "University", 
-  "College", "B.E", "B.S", "M.S", "BCA", "MCA", "B.Com", "M.Com", "MBA", "School", "Diploma",
-  "BSc", "MSc", "Bachelor of Science", "Master of Science"
+  "education", "academic", "academics", "degree", "university", "college", "school", "institute", 
+  "diploma", "bachelor", "bachelors", "master", "masters", "phd", "ph.d", "btech", "b.tech", 
+  "mtech", "m.tech", "bca", "mca", "mba", "bsc", "b.sc", "msc", "m.sc", "be", "b.e", "bs", "b.s", 
+  "ms", "m.s", "bcom", "b.com", "mcom", "m.com", "computer science", "engineering"
 ];
 
 const actionWords = ["developed", "built", "designed", "implemented", "created", "spearheaded", "managed", "optimized", "orchestrated"];
@@ -91,15 +92,22 @@ const checkContactInfo = (text) => {
 const extractEducationScore = (text) => {
   let score = 0;
   const lowerText = text.toLowerCase();
-  
+  const cleanedText = lowerText.replace(/\s+/g, " ");
+
+  let matchedCount = 0;
   educationKeywords.forEach(word => {
-    if (lowerText.includes(word.toLowerCase())) {
-      score += 35;
+    const escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, (c) => c === '.' ? '\\.?' : '\\' + c);
+    const regex = new RegExp('\\b' + escaped + '\\b', 'i');
+    if (regex.test(cleanedText)) {
+      matchedCount++;
     }
   });
 
-  if (text.match(/\b(B\.E|B\.S|M\.S|B\.Tech|M\.Tech|BCA|MCA|MBA|BSc|MSc)\b/i)) {
-    score += 50;
+  score += Math.min(matchedCount * 35, 70);
+
+  const degreeRegex = /\b(B\.?E\.?|B\.?S\.?|M\.?S\.?|B\.?Tech\.?|M\.?Tech\.?|BCA|MCA|MBA|B\.?Sc\.?|M\.?Sc\.?|Ph\.?D\.?|B\.?Com\.?|M\.?Com\.?|Bachelor[s]?|Master[s]?)\b/i;
+  if (degreeRegex.test(cleanedText)) {
+    score += 30;
   }
 
   return Math.min(score, 100);
