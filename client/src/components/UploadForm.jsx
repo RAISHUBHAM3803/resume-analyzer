@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Upload, FileText, X, ArrowLeft, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
 import { uploadResume } from "../services/api";
 import "./UploadForm.css";
@@ -11,7 +11,6 @@ function UploadForm({ onResult, onBack }) {
   const [error, setError] = useState("");
   const [progress, setProgress] = useState(0);
   const inputRef = useRef(null);
-  const sectionRef = useRef(null);
 
 
 

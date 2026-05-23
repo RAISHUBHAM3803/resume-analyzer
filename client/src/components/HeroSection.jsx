@@ -1,4 +1,3 @@
-import React from "react";
 import { Zap, BarChart3, FileText, Target, Brain, Shield, ArrowRight } from "lucide-react";
 import "./HeroSection.css";
 

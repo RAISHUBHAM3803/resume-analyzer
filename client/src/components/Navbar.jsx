@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Sparkles, Menu, X, History, LogIn, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Sparkles, Menu, X, LogIn, LogOut } from "lucide-react";
 import "./Navbar.css";
 
 function Navbar({ onLogoClick, onGetStarted, onHistoryClick, user, onLogout, onLoginClick }) {

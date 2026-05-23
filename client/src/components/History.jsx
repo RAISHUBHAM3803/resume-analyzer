@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Clock, FileText, Target, Trophy, AlertCircle, Trash2 } from "lucide-react";
 import { getHistory, deleteHistory } from "../services/api";
 import "./History.css";
@@ -8,22 +8,25 @@ function History({ onBack }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [refreshCount, setRefreshCount] = useState(0);
 
   useEffect(() => {
+    let active = true;
+    const fetchHistory = async () => {
+      try {
+        const res = await getHistory();
+        if (active) setHistory(res.data);
+      } catch {
+        if (active) setError("Failed to fetch history.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
     fetchHistory();
-  }, []);
-
-  const fetchHistory = async () => {
-    setLoading(true);
-    try {
-      const res = await getHistory();
-      setHistory(res.data);
-    } catch (err) {
-      setError("Failed to fetch history.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    return () => {
+      active = false;
+    };
+  }, [refreshCount]);
 
   const handleDelete = async (timeframe) => {
     if (!window.confirm(`Are you sure you want to delete ${timeframe === 'all' ? 'all' : 'the last ' + timeframe} history?`)) return;
@@ -31,8 +34,9 @@ function History({ onBack }) {
     setIsDeleting(true);
     try {
       await deleteHistory(timeframe);
-      fetchHistory(); // Refresh
-    } catch (err) {
+      setLoading(true);
+      setRefreshCount((c) => c + 1); // Refresh
+    } catch {
       alert("Failed to delete history.");
     } finally {
       setIsDeleting(false);

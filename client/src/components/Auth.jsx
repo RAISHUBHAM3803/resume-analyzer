@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { login, register } from "../services/api";
-import { Mail, Lock, User, Sparkles, ArrowRight, AlertCircle, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { Mail, Lock, User, Sparkles, ArrowRight, AlertCircle, Eye, EyeOff } from "lucide-react";
 import "./Auth.css";
 
 function Auth({ onAuthSuccess, goHome }) {

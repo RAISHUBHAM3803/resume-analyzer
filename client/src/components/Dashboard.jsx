@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,
@@ -78,7 +78,7 @@ function MiniScore({ icon, label, value, color }) {
   );
 }
 
-function Dashboard({ data, onReset, goUpload }) {
+function Dashboard({ data, onReset }) {
   if (!data) return null;
   const { match, score, feedback, questions } = data;
 
@@ -223,7 +223,7 @@ function Dashboard({ data, onReset, goUpload }) {
               {feedbackLines.map((line, i) => (
                 <li key={i} className="ai-item">
                   <div className="ai-bullet"><Sparkles size={12}/></div>
-                  <span>{line.replace(/^[•\-]\s*/, "")}</span>
+                  <span>{line.replace(/^[•-]\s*/, "")}</span>
                 </li>
               ))}
             </ul>

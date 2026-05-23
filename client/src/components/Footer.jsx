@@ -1,4 +1,3 @@
-import React from "react";
 import { Sparkles, Heart } from "lucide-react";
 import "./Footer.css";
 

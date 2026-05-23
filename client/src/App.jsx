@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, lazy, Suspense } from "react";
+import { useState, useEffect, useLayoutEffect, lazy, Suspense } from "react";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import Footer from "./components/Footer";
@@ -22,7 +22,7 @@ function App() {
         try {
           const res = await getMe();
           setUser({ ...res.data, token });
-        } catch (err) {
+        } catch {
           localStorage.removeItem("token");
           setUser(null);
         }
