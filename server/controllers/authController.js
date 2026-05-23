@@ -1,26 +1,53 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error("FATAL: JWT_SECRET environment variable is not set. Server cannot start securely.");
+}
+
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || "default_secret", {
-    expiresIn: "30d",
+  return jwt.sign({ id }, JWT_SECRET, {
+    expiresIn: "7d", // Reduced from 30d to 7d for better security
   });
 };
+
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    
+
+    // 1. Presence check
     if (!name || !email || !password) {
       return res.status(400).json({ error: "Please fill all fields" });
     }
 
-    const userExists = await User.findOne({ email });
+    // 2. Name length
+    const trimmedName = name.trim();
+    if (trimmedName.length < 2 || trimmedName.length > 50) {
+      return res.status(400).json({ error: "Name must be between 2 and 50 characters." });
+    }
+
+    // 3. Email format
+    if (!EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ error: "Please enter a valid email address." });
+    }
+
+    // 4. Password strength: min 8 chars, must have 1 letter + 1 number
+    if (password.length < 8) {
+      return res.status(400).json({ error: "Password must be at least 8 characters." });
+    }
+    if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
+      return res.status(400).json({ error: "Password must contain at least one letter and one number." });
+    }
+
+    const userExists = await User.findOne({ email: email.toLowerCase() });
     if (userExists) {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name: trimmedName, email: email.toLowerCase(), password });
     res.status(201).json({
       _id: user._id,
       name: user.name,
