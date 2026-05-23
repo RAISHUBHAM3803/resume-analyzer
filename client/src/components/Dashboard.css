@@ -4,6 +4,21 @@
 /* Header */
 .dash__hdr { display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; }
 .dash__actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+
+/* General-analysis nudge banner */
+.dash__nudge {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 20px; border-radius: var(--radius-md); margin-bottom: 24px;
+  background: rgba(255, 179, 71, 0.08); border: 1px solid rgba(255, 179, 71, 0.25);
+  color: var(--accent-orange, #ffb347); font-size: 14px; line-height: 1.6;
+}
+.dash__nudge strong { color: #fff; }
+.dash__nudge-btn {
+  background: none; border: none; color: var(--accent-orange, #ffb347);
+  font-weight: 700; font-size: 14px; cursor: pointer; padding: 0;
+  text-decoration: underline; font-family: var(--font-primary);
+}
+.dash__nudge-btn:hover { color: #fff; }
 .dash__btn {
   display: inline-flex; align-items: center; gap: 8px;
   background: var(--bg-glass-strong); border: 1px solid var(--border-subtle); color: var(--text-secondary);

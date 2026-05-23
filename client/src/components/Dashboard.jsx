@@ -5,7 +5,7 @@ import {
 } from "chart.js";
 import {
   ArrowLeft, Trophy, Target, Brain, Sparkles, CheckCircle2, XCircle,
-  TrendingUp, FileText, Zap, Award, BarChart3, Download, MessageSquare
+  TrendingUp, FileText, Zap, Award, BarChart3, Download, MessageSquare, Info
 } from "lucide-react";
 import "./Dashboard.css";
 
@@ -78,7 +78,7 @@ function MiniScore({ icon, label, value, color }) {
   );
 }
 
-function Dashboard({ data, onReset }) {
+function Dashboard({ data, onReset, goUpload }) {
   if (!data) return null;
   const { match, score, feedback, questions } = data;
 
@@ -131,6 +131,18 @@ function Dashboard({ data, onReset }) {
             <span className="dash__ai-badge"><Sparkles size={14} /> AI Report</span>
           </div>
         </div>
+
+        {/* Nudge banner — only shown when no job description was used */}
+        {match.generalAnalysis && (
+          <div className="dash__nudge">
+            <Info size={16} />
+            <span>
+              These scores reflect your <strong>resume quality</strong>, not a specific job match.
+              &nbsp;<button className="dash__nudge-btn" onClick={onReset}>Add a job description</button>&nbsp;
+              to get a real match score.
+            </span>
+          </div>
+        )}
 
         <div className="dash__grid">
           {/* Hero card */}

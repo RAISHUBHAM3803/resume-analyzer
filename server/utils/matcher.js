@@ -145,7 +145,10 @@ const matchResumeToJob = (resumeText, jobText = "") => {
   if (isGeneralAnalysis) {
     matchingSkills = resumeSkills;
     missingSkills = [];
-    skillsScore = Math.min((resumeSkills.length / 10) * 100, 100);
+    // Without a job description we can only measure resume quality,
+    // not actual job fit. Use a harder scale (needs 15 skills for 70%)
+    // and cap at 70 so scores stay honest.
+    skillsScore = Math.min((resumeSkills.length / 15) * 100, 70);
     keywordScore = extractActionScore(resumeText);
   } else {
     const jobSkills = extractSkills(jobText);
@@ -157,12 +160,17 @@ const matchResumeToJob = (resumeText, jobText = "") => {
     missingSkills = jobSkills.filter(skill => !resumeSkills.includes(skill));
   }
 
-  const experienceScore = extractExperienceScore(resumeText);
-  const educationScore = extractEducationScore(resumeText);
-  const structureScore = checkStructure(resumeText);
-  const contactScore = checkContactInfo(resumeText);
+  const rawExperienceScore = extractExperienceScore(resumeText);
+  const rawEducationScore  = extractEducationScore(resumeText);
+  const structureScore     = checkStructure(resumeText);
+  const contactScore       = checkContactInfo(resumeText);
 
-  const finalScore = Math.round(
+  // Without a job description cap experience & education at 75 so the
+  // overall score stays in a realistic "resume quality" range (~55–78).
+  const experienceScore = isGeneralAnalysis ? Math.min(rawExperienceScore, 75) : rawExperienceScore;
+  const educationScore  = isGeneralAnalysis ? Math.min(rawEducationScore,  75) : rawEducationScore;
+
+  let finalScore = Math.round(
     0.40 * skillsScore +
     0.20 * keywordScore +
     0.15 * experienceScore +
@@ -170,6 +178,10 @@ const matchResumeToJob = (resumeText, jobText = "") => {
     0.10 * structureScore +
     0.05 * contactScore
   );
+
+  // Hard cap: without a job description a perfect score of 100 is
+  // meaningless — no role was specified. Cap at 80 for honesty.
+  if (isGeneralAnalysis) finalScore = Math.min(finalScore, 80);
 
   return {
     finalScore,
@@ -181,6 +193,7 @@ const matchResumeToJob = (resumeText, jobText = "") => {
     contactScore,
     matchingSkills,
     missingSkills,
+    generalAnalysis: isGeneralAnalysis, // frontend uses this for the nudge
   };
 };
 
