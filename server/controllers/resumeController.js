@@ -59,6 +59,12 @@ const uploadResume = (req, res) => {
 
       const jobDescription = req.body.jobDescription || "";
       const matchResult = matchResumeToJob(text, jobDescription);
+
+      // If no job description was provided, align general ATS score with match score (both capped at 80)
+      if (matchResult.generalAnalysis) {
+        result.score = matchResult.finalScore;
+      }
+
       const aiResponse = await generateFeedback(text, result);
 
       const resumeData = {
