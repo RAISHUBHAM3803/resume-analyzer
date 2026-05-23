@@ -1,10 +1,31 @@
 const OpenAI = require("openai");
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let client = null;
+const apiKey = process.env.OPENAI_API_KEY;
+if (apiKey && apiKey !== "your_api_key_here") {
+  try {
+    client = new OpenAI({
+      apiKey: apiKey,
+    });
+  } catch (err) {
+    console.warn("Failed to initialize OpenAI client:", err.message);
+  }
+} else {
+  console.warn("OpenAI API key is missing or is using placeholder. AI feedback will use fallbacks.");
+}
 
 const generateFeedback = async (resumeText, analysis) => {
+  const fallbackDomain = "Software Engineering";
+  const fallbackResponse = {
+    domain: fallbackDomain,
+    feedback: `• Focus on domain-specific certifications in ${fallbackDomain}.\n• Quantify your impact in previous projects.\n• Highlight expertise in modern ${fallbackDomain} tools and frameworks.`,
+    questions: [`What is your preferred architectural pattern in ${fallbackDomain}?`, "Explain a complex technical challenge you faced in your last role.", "How do you stay updated with the latest industry trends?"]
+  };
+
+  if (!client) {
+    return fallbackResponse;
+  }
+
   try {
     const prompt = `
 You are a Senior Technical Career Coach and Expert Recruiter. 
@@ -42,19 +63,14 @@ Focus on being EXTREMELY realistic and professional.
 
     const parsed = JSON.parse(response.choices[0].message.content.trim());
     return {
-      domain: parsed.domain || "Software Engineering",
-      feedback: parsed.feedback,
-      questions: parsed.questions
+      domain: parsed.domain || fallbackDomain,
+      feedback: parsed.feedback || fallbackResponse.feedback,
+      questions: parsed.questions || fallbackResponse.questions
     };
 
   } catch (error) {
     console.error("AI Feedback Error:", error.message);
-    const fallbackDomain = "Software Engineering";
-    return {
-      domain: fallbackDomain,
-      feedback: `• Focus on domain-specific certifications in ${fallbackDomain}.\n• Quantify your impact in previous projects.\n• Highlight expertise in modern ${fallbackDomain} tools and frameworks.`,
-      questions: [`What is your preferred architectural pattern in ${fallbackDomain}?`, "Explain a complex technical challenge you faced in your last role.", "How do you stay updated with the latest industry trends?"]
-    };
+    return fallbackResponse;
   }
 };
 

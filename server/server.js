@@ -5,7 +5,7 @@ const path = require("path");
 const connectDB = require("./config/db");
 const fs = require("fs");
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, ".env") });
 connectDB();
 
 // Ensure uploads directory exists
