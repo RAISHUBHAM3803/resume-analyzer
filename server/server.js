@@ -44,13 +44,13 @@ const allowedOrigins = [
   process.env.CLIENT_URL, // Set this to your Render URL in production
 ].filter(Boolean);
 
-app.use(cors({
+app.use("/api", cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g., mobile apps, curl)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(null, false);
     }
   },
   credentials: true,
