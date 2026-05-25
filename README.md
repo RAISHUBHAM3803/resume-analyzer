@@ -38,7 +38,10 @@ An intelligent, full-stack application designed to help job seekers optimize the
 2. Run `npm run dev`.
 3. Open `http://localhost:5173`.
 
-## 🔮 Roadmap
-- [ ] Implement secure User Authentication (JWT).
-- [ ] Add a comprehensive User History Dashboard.
-- [ ] Enable PDF export for analysis reports.
+## 🔮 Roadmap & Project Status
+
+All core features are now **fully implemented and verified**:
+- [x] **Secure User Authentication (JWT):** Safe signup, login, and secure route protection.
+- [x] **User History Dashboard:** Secure historical uploads dashboard with selective deletion controls.
+- [x] **Resume Gatekeeper Check:** Custom AI-powered document validator with strict heuristic fallback.
+- [ ] **Next Steps:** Enable PDF report exports for analysis scores.
