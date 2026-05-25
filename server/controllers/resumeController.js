@@ -49,8 +49,8 @@ const uploadResume = (req, res) => {
     try {
       const text = await parsePDF(filePath);
       
-      // Validate if text looks like a resume
-      const validation = validateResumeText(text);
+      // Validate if text looks like a resume (AI-powered check)
+      const validation = await validateResumeText(text);
       if (!validation.isValid) {
         return res.status(400).json({ error: validation.reason });
       }
