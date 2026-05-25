@@ -44,4 +44,3 @@ All core features are now **fully implemented and verified**:
 - [x] **Secure User Authentication (JWT):** Safe signup, login, and secure route protection.
 - [x] **User History Dashboard:** Secure historical uploads dashboard with selective deletion controls.
 - [x] **Resume Gatekeeper Check:** Custom AI-powered document validator with strict heuristic fallback.
-- [ ] **Next Steps:** Enable PDF report exports for analysis scores.
