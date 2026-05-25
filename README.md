@@ -6,7 +6,7 @@ An intelligent, full-stack application designed to help job seekers optimize the
 
 - **Automated PDF Parsing:** Seamlessly extracts text from PDF resumes using `pdf-parse`.
 - **ATS Scoring Algorithm:** Calculates a weighted compatibility score based on skills, experience, and keywords.
-- **AI Feedback Engine:** Integrates with OpenAI API to provide professional resume improvement tips and mock interview questions.
+- **AI Feedback Engine:** Integrates with Google Gemini API to provide professional resume improvement tips and mock interview questions.
 - **Interactive Dashboard:** A responsive React-based UI for visualizing analysis results.
 - **Data Persistence:** Uses MongoDB to securely store analysis history.
 
@@ -15,7 +15,7 @@ An intelligent, full-stack application designed to help job seekers optimize the
 - **Frontend:** React.js, Vite, Axios, Lucide-React
 - **Backend:** Node.js, Express.js, Multer
 - **Database:** MongoDB (Mongoose)
-- **AI:** OpenAI API
+- **AI:** Google Gemini API
 
 ## ⚙️ Local Setup
 
@@ -28,7 +28,7 @@ An intelligent, full-stack application designed to help job seekers optimize the
 2. Create a `.env` file with:
    ```env
    MONGO_URI=your_mongodb_connection_string
-   OPENAI_API_KEY=your_openai_api_key
+   GEMINI_API_KEY=your_gemini_api_key
    PORT=3000
    ```
 3. Run `npm start`.

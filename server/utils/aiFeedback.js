@@ -1,32 +1,26 @@
-const OpenAI = require("openai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-let client = null;
-const apiKey = process.env.OPENAI_API_KEY;
-if (apiKey && apiKey !== "your_api_key_here") {
-  try {
-    client = new OpenAI({
-      apiKey: apiKey,
-    });
-  } catch (err) {
-    console.warn("Failed to initialize OpenAI client:", err.message);
-  }
-} else {
-  console.warn("OpenAI API key is missing or is using placeholder. AI feedback will use fallbacks.");
-}
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
 
 const generateFeedback = async (resumeText, analysis) => {
-  const fallbackDomain = "Software Engineering";
   const fallbackResponse = {
-    domain: fallbackDomain,
-    feedback: `• Focus on domain-specific certifications in ${fallbackDomain}.\n• Quantify your impact in previous projects.\n• Highlight expertise in modern ${fallbackDomain} tools and frameworks.`,
-    questions: [`What is your preferred architectural pattern in ${fallbackDomain}?`, "Explain a complex technical challenge you faced in your last role.", "How do you stay updated with the latest industry trends?"]
+    domain: "Software Engineering",
+    feedback: `• Focus on domain-specific certifications.\n• Quantify your impact in previous projects.\n• Highlight expertise in modern tools and frameworks.`,
+    questions: [
+      "What is your preferred architectural pattern?",
+      "Explain a complex technical challenge you faced in your last role.",
+      "How do you stay updated with the latest industry trends?"
+    ]
   };
 
-  if (!client) {
-    return fallbackResponse;
-  }
+  if (!genAI) return fallbackResponse;
 
   try {
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      generationConfig: { responseMimeType: "application/json" },
+    });
+
     const prompt = `
 You are a Senior Technical Career Coach and Expert Recruiter. 
 
@@ -42,34 +36,26 @@ TASKS:
 Resume Content:
 ${resumeText.substring(0, 4000)}
 
-Identified Technical Skills: ${analysis.skills.join(", ")}
+Identified Technical Skills: ${analysis.skills ? analysis.skills.join(", ") : ""}
 
-Return ONLY a valid JSON object:
+Return ONLY a valid JSON object matching the following structure:
 {
   "domain": "Detected Domain Name",
-  "feedback": "• Sugestion 1\\n• Suggestion 2\\n• Suggestion 3",
+  "feedback": "• Suggestion 1\\n• Suggestion 2\\n• Suggestion 3",
   "questions": ["Question 1", "Question 2", "Question 3"]
 }
-
-Focus on being EXTREMELY realistic and professional.
 `;
 
-    const response = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
-      max_tokens: 600,
-    });
-
-    const parsed = JSON.parse(response.choices[0].message.content.trim());
+    const result = await model.generateContent(prompt);
+    const parsed = JSON.parse(result.response.text().trim());
+    
     return {
-      domain: parsed.domain || fallbackDomain,
+      domain: parsed.domain || fallbackResponse.domain,
       feedback: parsed.feedback || fallbackResponse.feedback,
       questions: parsed.questions || fallbackResponse.questions
     };
-
   } catch (error) {
-    console.error("AI Feedback Error:", error.message);
+    console.error("Gemini AI Feedback Error:", error.message);
     return fallbackResponse;
   }
 };
