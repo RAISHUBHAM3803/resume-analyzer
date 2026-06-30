@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { login, register } from "../services/api";
+import { login, register, forgotPassword } from "../services/api";
 import { Mail, Lock, User, Sparkles, ArrowRight, AlertCircle, Eye, EyeOff } from "lucide-react";
 import "./Auth.css";
 
 function Auth({ onAuthSuccess, goHome }) {
-  const [isLogin, setIsLogin] = useState(true);
+  const [viewMode, setViewMode] = useState("login"); // "login", "register", "forgot"
+  const isLogin = viewMode === "login";
+  const isRegister = viewMode === "register";
+  const isForgot = viewMode === "forgot";
+  const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
@@ -13,12 +17,14 @@ function Auth({ onAuthSuccess, goHome }) {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
+    setMessage("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setMessage("");
 
     // Client-side password validation on registration for better UX
     if (!isLogin) {
@@ -36,7 +42,12 @@ function Auth({ onAuthSuccess, goHome }) {
 
     try {
       let res;
-      if (isLogin) {
+      if (isForgot) {
+        res = await forgotPassword({ email: formData.email });
+        setMessage(res.data.message || "Password reset email sent.");
+        setLoading(false);
+        return;
+      } else if (isLogin) {
         res = await login({ email: formData.email, password: formData.password });
       } else {
         res = await register(formData);
@@ -61,11 +72,13 @@ function Auth({ onAuthSuccess, goHome }) {
         <div className="auth-card">
           <div className="auth-hdr">
             <div className="auth-icon"><Sparkles size={24} /></div>
-            <h2>{isLogin ? "Sign in" : "Create Account"}</h2>
+            <h2>{isForgot ? "Reset Password" : (isLogin ? "Sign in" : "Create Account")}</h2>
             <p>
-              {isLogin 
-                ? "Enter your credentials to access your insights" 
-                : "Join thousands of job seekers optimizing their careers."}
+              {isForgot
+                ? "Enter your email to receive a password reset link."
+                : (isLogin 
+                  ? "Enter your credentials to access your insights" 
+                  : "Join thousands of job seekers optimizing their careers.")}
             </p>
           </div>
 
@@ -74,9 +87,14 @@ function Auth({ onAuthSuccess, goHome }) {
               <AlertCircle size={16} /> {error}
             </div>
           )}
+          {message && (
+            <div className="auth-error" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)", color: "#10b981", border: "1px solid rgba(16, 185, 129, 0.2)" }}>
+              <Sparkles size={16} /> {message}
+            </div>
+          )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
-            {!isLogin && (
+            {isRegister && (
               <div className="input-group">
                 <label className="input-label">Full Name</label>
                 <div className="input-wrapper">
@@ -110,8 +128,20 @@ function Auth({ onAuthSuccess, goHome }) {
               </div>
             </div>
 
-            <div className="input-group">
-              <label className="input-label">Password</label>
+            {!isForgot && (
+              <div className="input-group">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <label className="input-label">Password</label>
+                  {isLogin && (
+                    <button 
+                      type="button" 
+                      onClick={() => { setViewMode("forgot"); setError(""); setMessage(""); }}
+                      style={{ background: "none", border: "none", color: "var(--accent)", fontSize: "0.85rem", cursor: "pointer" }}
+                    >
+                      Forgot Password?
+                    </button>
+                  )}
+                </div>
               <div className="input-wrapper">
                 <Lock className="input-icon-left" size={18} />
                 <input 
@@ -132,10 +162,11 @@ function Auth({ onAuthSuccess, goHome }) {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              {!isLogin && (
+              {isRegister && (
                 <span className="input-hint">Must be at least 8 characters with 1 letter & 1 number</span>
               )}
             </div>
+            )}
 
 
             <button type="submit" className="auth-btn" disabled={loading}>
@@ -143,20 +174,31 @@ function Auth({ onAuthSuccess, goHome }) {
                 <span className="spinner"></span>
               ) : (
                 <>
-                  {isLogin ? "Sign in" : "Get Started"} <ArrowRight size={18} />
+                  {isForgot ? "Send Reset Link" : (isLogin ? "Sign in" : "Get Started")} <ArrowRight size={18} />
                 </>
               )}
             </button>
           </form>
 
           <div className="auth-footer">
-            {isLogin ? "New here?" : "Already have an account?"}
-            <button 
-              className="auth-switch" 
-              onClick={() => { setIsLogin(!isLogin); setError(""); }}
-            >
-              {isLogin ? "Create an account" : "Sign in"}
-            </button>
+            {isForgot ? (
+              <button 
+                className="auth-switch" 
+                onClick={() => { setViewMode("login"); setError(""); setMessage(""); }}
+              >
+                Back to Sign in
+              </button>
+            ) : (
+              <>
+                {isLogin ? "New here? " : "Already have an account? "}
+                <button 
+                  className="auth-switch" 
+                  onClick={() => { setViewMode(isLogin ? "register" : "login"); setError(""); setMessage(""); }}
+                >
+                  {isLogin ? "Create an account" : "Sign in"}
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

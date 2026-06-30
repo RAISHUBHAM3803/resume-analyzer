@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -124,4 +126,82 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, logoutUser, getCurrentUser };
+const forgotPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email.toLowerCase() });
+    if (!user) {
+      // Return 200 even if user not found to prevent email enumeration
+      return res.status(200).json({ message: "Email sent" });
+    }
+
+    // Get reset token
+    const resetToken = user.getResetPasswordToken();
+    await user.save({ validateBeforeSave: false });
+
+    // Create reset url
+    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+    const resetUrl = `${clientUrl}?resetToken=${resetToken}`;
+
+    const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Password reset token",
+        message,
+      });
+
+      res.status(200).json({ message: "Email sent" });
+    } catch (err) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      console.error("Email could not be sent:", err);
+      return res.status(500).json({ error: "Email could not be sent" });
+    }
+  } catch (error) {
+    console.error("Forgot password error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred. Please try again." });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    // Get hashed token
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.resettoken)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: "Invalid or expired token" });
+    }
+
+    // Password strength check
+    if (req.body.password.length < 8) {
+      return res.status(400).json({ error: "Password must be at least 8 characters." });
+    }
+    if (!/[a-zA-Z]/.test(req.body.password) || !/[0-9]/.test(req.body.password)) {
+      return res.status(400).json({ error: "Password must contain at least one letter and one number." });
+    }
+
+    // Set new password
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Reset password error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred. Please try again." });
+  }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, getCurrentUser, forgotPassword, resetPassword };

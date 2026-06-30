@@ -9,13 +9,25 @@ const UploadForm = lazy(() => import("./components/UploadForm"));
 const Dashboard = lazy(() => import("./components/Dashboard"));
 const History = lazy(() => import("./components/History"));
 const Auth = lazy(() => import("./components/Auth"));
+const ResetPassword = lazy(() => import("./components/ResetPassword"));
 
 function App() {
   const [view, setView] = useState("home");
   const [result, setResult] = useState(null);
   const [user, setUser] = useState(null);
+  const [resetToken, setResetToken] = useState(null);
 
   useEffect(() => {
+    // Check if we have a reset token in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('resetToken');
+    if (token) {
+      setResetToken(token);
+      setView("reset-password");
+      // Clean up the URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     // Cookie is managed by the browser — just call /auth/me unconditionally
     const checkAuth = async () => {
       try {
@@ -93,6 +105,7 @@ function App() {
           {view === "upload" && <UploadForm onResult={showResults} onBack={goHome} />}
           {view === "dashboard" && result && <Dashboard data={result} onReset={goHome} />}
           {view === "history" && <History onBack={goHome} />}
+          {view === "reset-password" && <ResetPassword token={resetToken} goHome={goHome} goAuth={goAuth} />}
         </Suspense>
       </main>
 
