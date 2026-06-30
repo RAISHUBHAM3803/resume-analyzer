@@ -64,14 +64,15 @@ const registerUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Register error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred. Please try again." });
   }
 };
 
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
 
     if (user && (await user.matchPassword(password))) {
       const token = generateToken(user._id);
@@ -93,7 +94,8 @@ const loginUser = async (req, res) => {
       res.status(401).json({ error: "Invalid email or password" });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Login error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred. Please try again." });
   }
 };
 
@@ -117,7 +119,8 @@ const getCurrentUser = async (req, res) => {
       email: req.user.email,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("GetCurrentUser error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred. Please try again." });
   }
 };
 

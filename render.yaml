@@ -10,3 +10,7 @@ services:
         value: 20.0.0
       - key: PORT
         value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_URL
+        value: https://resuscan-iwrc.onrender.com  # ← Update to your actual Render URL

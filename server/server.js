@@ -5,6 +5,7 @@ const path = require("path");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const compression = require("compression");
+const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const fs = require("fs");
 
@@ -51,7 +52,7 @@ app.use("/api", cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(null, false);
+      callback(new Error(`CORS: origin '${origin}' not allowed`), false);
     }
   },
   credentials: true,
@@ -61,10 +62,13 @@ app.use("/api", cors({
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: false, limit: "10kb" }));
 
-// 4. Response compression: Gzip/Brotli for all responses
+// 4. Cookie parser: populates req.cookies for HTTPOnly cookie auth
+app.use(cookieParser());
+
+// 5. Response compression: Gzip/Brotli for all responses
 app.use(compression());
 
-// 5. Rate limiter: cap auth attempts at 20 requests per 15 min per IP
+// 6. Auth rate limiter: cap auth attempts at 20 requests per 15 min per IP
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 20,
@@ -73,18 +77,10 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// 6. Upload rate limiter: cap resume uploads at 10 per 15 min
-const uploadLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: { error: "Upload limit reached. Please wait 15 minutes before trying again." },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
 // ─── Routes ──────────────────────────────────────────────────────────────
 app.use("/api/auth", authLimiter, require("./routes/authRoutes"));
-app.use("/api/resume", uploadLimiter, require("./routes/resumeRoutes"));
+// Note: uploadLimiter is applied directly on the POST /upload route (see resumeRoutes.js)
+app.use("/api/resume", require("./routes/resumeRoutes"));
 
 // ─── Serve Frontend in Production ─────────────────────────────────────────
 app.use(express.static(path.join(__dirname, "../client/dist")));

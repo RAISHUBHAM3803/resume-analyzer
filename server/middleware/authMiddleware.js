@@ -14,15 +14,9 @@ const protect = async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   }
 
-  // 2. Fallback: read from HTTPOnly cookie
-  if (!token && req.headers.cookie) {
-    const cookieToken = req.headers.cookie
-      .split(";")
-      .map((c) => c.trim())
-      .find((c) => c.startsWith("token="));
-    if (cookieToken) {
-      token = cookieToken.split("=")[1];
-    }
+  // 2. Fallback: read from HTTPOnly cookie (parsed by cookie-parser middleware)
+  if (!token && req.cookies && req.cookies.token) {
+    token = req.cookies.token;
   }
 
   if (token) {

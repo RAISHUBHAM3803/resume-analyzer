@@ -94,7 +94,8 @@ const uploadResume = (req, res) => {
       });
 
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.error("Resume upload error:", error.message);
+      res.status(500).json({ error: "An internal server error occurred. Please try again." });
     } finally {
       // Clean up uploaded file
       fs.unlink(filePath, (unlinkErr) => {
@@ -111,7 +112,8 @@ const getHistory = async (req, res) => {
       .limit(20);
     res.json(history);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Get history error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred. Please try again." });
   }
 };
 
@@ -133,7 +135,8 @@ const deleteHistory = async (req, res) => {
     const result = await Resume.deleteMany(query);
     res.json({ message: `Deleted ${result.deletedCount} history records.` });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Delete history error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred. Please try again." });
   }
 };
 
