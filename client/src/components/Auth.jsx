@@ -27,7 +27,7 @@ function Auth({ onAuthSuccess, goHome }) {
     setMessage("");
 
     // Client-side password validation on registration for better UX
-    if (!isLogin) {
+    if (isRegister) {
       if (formData.password.length < 8) {
         setError("Password must be at least 8 characters.");
         setLoading(false);
