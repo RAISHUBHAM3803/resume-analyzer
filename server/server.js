@@ -31,6 +31,7 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const app = express();
+app.set("trust proxy", 1); // Required for express-rate-limit behind Render's reverse proxy
 
 // ─── Security Middleware ───────────────────────────────────────────────────
 // 1. Helmet: sets secure HTTP response headers
@@ -43,7 +44,8 @@ app.use(helmet({
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  process.env.CLIENT_URL, // Set this to your Render URL in production
+  "https://resuscan-iwrc.onrender.com",
+  process.env.CLIENT_URL,
 ].filter(Boolean);
 
 app.use("/api", cors({
