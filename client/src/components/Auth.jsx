@@ -196,17 +196,22 @@ function Auth({ onAuthSuccess, goHome }) {
 
           <div className="auth-footer">
             {isForgot ? (
-              <p>
-                Remember your password? <button type="button" onClick={() => { setViewMode("login"); setError(""); setMessage(""); }}>Sign in</button>
-              </p>
-            ) : isLogin ? (
-              <p>
-                Don't have an account? <button type="button" onClick={() => { setViewMode("register"); setError(""); setMessage(""); }}>Sign up</button>
-              </p>
+              <button 
+                className="auth-switch" 
+                onClick={() => { setViewMode("login"); setError(""); setMessage(""); }}
+              >
+                Back to Sign in
+              </button>
             ) : (
-              <p>
-                Already have an account? <button type="button" onClick={() => { setViewMode("login"); setError(""); setMessage(""); }}>Sign in</button>
-              </p>
+              <>
+                {isLogin ? "New here? " : "Already have an account? "}
+                <button 
+                  className="auth-switch" 
+                  onClick={() => { setViewMode(isLogin ? "register" : "login"); setError(""); setMessage(""); }}
+                >
+                  {isLogin ? "Create an account" : "Sign in"}
+                </button>
+              </>
             )}
           </div>
           </>
