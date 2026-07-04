@@ -35,3 +35,6 @@ export const getHistory = () =>
 
 export const deleteHistory = (timeframe) =>
   API.delete(`/resume/history?timeframe=${timeframe}`);
+
+export const rewriteBullet = (data) => 
+  API.post("/resume/rewrite", data);

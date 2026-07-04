@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rateLimit = require("express-rate-limit");
-const { uploadResume, getHistory, deleteHistory } = require("../controllers/resumeController");
+const { uploadResume, getHistory, deleteHistory, rewriteBulletPoint } = require("../controllers/resumeController");
 const { protect, requireAuth } = require("../middleware/authMiddleware");
 
 // Rate limit only the upload endpoint (10 uploads per 15 min per IP)
@@ -19,5 +19,8 @@ router.post("/upload", uploadLimiter, protect, uploadResume);
 // History strictly requires login
 router.get("/history", protect, requireAuth, getHistory);
 router.delete("/history", protect, requireAuth, deleteHistory);
+
+// AI Rewrite endpoint
+router.post("/rewrite", protect, rewriteBulletPoint);
 
 module.exports = router;

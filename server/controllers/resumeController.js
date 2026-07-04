@@ -91,6 +91,7 @@ const uploadResume = (req, res) => {
         domain: aiResponse.domain,
         feedback: aiResponse.feedback,
         questions: aiResponse.questions,
+        jobDescription: jobDescription,
       });
 
     } catch (error) {
@@ -140,4 +141,22 @@ const deleteHistory = async (req, res) => {
   }
 };
 
-module.exports = { uploadResume, getHistory, deleteHistory };
+const rewriteBulletPoint = async (req, res) => {
+  try {
+    const { bulletPoint, jobDescription, domain } = req.body;
+    
+    if (!bulletPoint) {
+      return res.status(400).json({ error: "Bullet point text is required." });
+    }
+
+    const aiRewriter = require("../utils/aiRewriter");
+    const aiResponse = await aiRewriter(bulletPoint, jobDescription, domain);
+    
+    res.json({ suggestions: aiResponse.suggestions });
+  } catch (error) {
+    console.error("Rewrite Bullet error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred while rewriting. Please try again." });
+  }
+};
+
+module.exports = { uploadResume, getHistory, deleteHistory, rewriteBulletPoint };

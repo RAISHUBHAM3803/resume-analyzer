@@ -1,12 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,
 } from "chart.js";
 import {
   ArrowLeft, Trophy, Target, Brain, Sparkles, CheckCircle2, XCircle,
-  TrendingUp, FileText, Zap, Award, BarChart3, Download, MessageSquare, Info
+  TrendingUp, FileText, Zap, Award, BarChart3, Download, MessageSquare, Info, Wand2, Copy, AlertCircle
 } from "lucide-react";
+import { rewriteBullet } from "../services/api";
 import "./Dashboard.css";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -82,7 +83,31 @@ function MiniScore({ icon, label, value, color }) {
 
 function Dashboard({ data, onReset }) {
   if (!data) return null;
-  const { match, score, feedback, questions } = data;
+  const { match, score, feedback, questions, jobDescription, domain } = data;
+
+  const [rewriteInput, setRewriteInput] = useState("");
+  const [rewriteLoading, setRewriteLoading] = useState(false);
+  const [rewriteSuggestions, setRewriteSuggestions] = useState(null);
+  const [rewriteError, setRewriteError] = useState("");
+
+  const handleRewrite = async () => {
+    if (!rewriteInput.trim()) return;
+    setRewriteLoading(true);
+    setRewriteError("");
+    setRewriteSuggestions(null);
+    try {
+      const res = await rewriteBullet({ bulletPoint: rewriteInput, jobDescription, domain });
+      setRewriteSuggestions(res.data.suggestions);
+    } catch (err) {
+      setRewriteError("Failed to generate suggestions. Please try again.");
+    } finally {
+      setRewriteLoading(false);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+  };
 
   const handlePrint = () => {
     window.print();
@@ -285,6 +310,53 @@ function Dashboard({ data, onReset }) {
               </div>
             </div>
           )}
+
+          {/* AI Resume Tailoring (Auto-Rewriter) */}
+          <div className="dcard dcard--ai dcard--rewriter">
+            <div className="dcard__label dcard__label--ai">
+              <Wand2 size={16} /> Resume Tailoring <span className="ai-pill ai-pill--alt">Powered by AI</span>
+            </div>
+            <p className="rewriter-desc">Paste a bullet point from your resume to rewrite it using the STAR method, tailored to your target job description.</p>
+            
+            <div className="rewriter-input-group">
+              <textarea 
+                className="rewriter-textarea"
+                placeholder="e.g., I coded the frontend for the application..."
+                value={rewriteInput}
+                onChange={(e) => setRewriteInput(e.target.value)}
+                rows={3}
+              />
+              <button 
+                className="rewriter-btn"
+                onClick={handleRewrite}
+                disabled={!rewriteInput.trim() || rewriteLoading}
+              >
+                {rewriteLoading ? <span className="spinner"></span> : <><Wand2 size={16} /> Rewrite</>}
+              </button>
+            </div>
+
+            {rewriteError && (
+              <div className="rewriter-alert">
+                <AlertCircle size={16} /> {rewriteError}
+              </div>
+            )}
+
+            {rewriteSuggestions && (
+              <div className="rewriter-results fade-in">
+                <p className="rewriter-results-title">AI Suggestions:</p>
+                <div className="rewriter-suggestions">
+                  {rewriteSuggestions.map((s, i) => (
+                    <div key={i} className="rsug-card">
+                      <div className="rsug-text">{s}</div>
+                      <button className="rsug-copy" onClick={() => copyToClipboard(s)} title="Copy to clipboard">
+                        <Copy size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>
