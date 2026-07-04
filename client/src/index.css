@@ -1,42 +1,82 @@
 /* ===== RESUSCAN AI — GLOBAL DESIGN SYSTEM ===== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 :root {
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-card: rgba(22, 22, 35, 0.75);
-  --bg-card-hover: rgba(30, 30, 50, 0.85);
-  --bg-glass: rgba(255, 255, 255, 0.03);
-  --bg-glass-strong: rgba(255, 255, 255, 0.06);
-  --accent-primary: #6c63ff;
-  --accent-light: #8b83ff;
-  --accent-green: #00d4aa;
+  /* Colors */
+  --bg-primary: #06070d;
+  --bg-secondary: #0e0f1a;
+  --bg-card: rgba(18, 19, 32, 0.85);
+  --bg-card-hover: rgba(26, 28, 46, 0.9);
+  --bg-glass: rgba(255, 255, 255, 0.025);
+  --bg-glass-strong: rgba(255, 255, 255, 0.055);
+
+  /* Accents */
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --accent-light: #a5b4fc;
+  --accent-green: #10b981;
   --accent-blue: #3b82f6;
-  --accent-orange: #ffb347;
-  --accent-red: #ff6b6b;
-  --gradient-hero: linear-gradient(135deg, #6c63ff 0%, #3b82f6 50%, #00d4aa 100%);
-  --text-primary: #eeeef0;
-  --text-secondary: #a0a0b8;
-  --text-muted: #6b6b80;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-medium: rgba(255, 255, 255, 0.1);
-  --border-accent: rgba(108, 99, 255, 0.3);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 40px rgba(108, 99, 255, 0.15);
+  --accent-orange: #f59e0b;
+  --accent-red: #ef4444;
+
+  /* Gradients */
+  --gradient-brand: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  --gradient-hero: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(99,102,241,0.2) 0%, transparent 70%);
+
+  /* Text */
+  --text-primary: #f1f1f5;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-medium: rgba(255, 255, 255, 0.09);
+  --border-accent: rgba(99, 102, 241, 0.35);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 20px 64px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.18);
+  --shadow-glow-sm: 0 0 20px rgba(99, 102, 241, 0.12);
+
+  /* Typography */
   --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: ui-monospace, 'JetBrains Mono', monospace;
+
+  /* Layout */
   --container-max: 1200px;
+  --nav-height: 68px;
+
+  /* Radii */
+  --radius-xs: 6px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
   --radius-full: 9999px;
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* ─── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
 
 body {
   font-family: var(--font-primary);
@@ -53,31 +93,33 @@ body {
   flex-direction: column;
 }
 
-::-webkit-scrollbar { width: 6px; }
+/* ─── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: 99px; }
-::selection { background: rgba(108, 99, 255, 0.3); color: #fff; }
+::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.5); }
 
+/* ─── Selection ───────────────────────────────────────────────── */
+::selection { background: rgba(99, 102, 241, 0.3); color: #fff; }
+
+/* ─── Gradient text ───────────────────────────────────────────── */
 .gradient-text {
-  background: var(--gradient-hero);
+  background: var(--gradient-brand);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: shimmer 4s linear infinite;
+  animation: shimmer 5s linear infinite;
 }
 
-@keyframes shimmer { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(108,99,255,0.4); } 70% { box-shadow: 0 0 0 10px rgba(108,99,255,0); } }
+/* ─── Animations ──────────────────────────────────────────────── */
+@keyframes shimmer   { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+@keyframes float     { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes spin      { to { transform: rotate(360deg); } }
+@keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); } 70% { box-shadow: 0 0 0 10px rgba(99,102,241,0); } }
 
-.fade-in {
-  animation: fadeIn 0.6s ease forwards;
-}
-
-.fade-in-up {
-  animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
+.fade-in    { animation: fadeIn 0.5s ease forwards; }
+.fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }

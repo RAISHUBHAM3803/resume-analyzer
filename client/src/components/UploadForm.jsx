@@ -12,8 +12,6 @@ function UploadForm({ onResult, onBack }) {
   const [progress, setProgress] = useState(0);
   const inputRef = useRef(null);
 
-
-
   const MAX_SIZE = 10 * 1024 * 1024; // 10MB
 
   const onDrag = (e) => {
@@ -92,19 +90,26 @@ function UploadForm({ onResult, onBack }) {
   return (
     <section className="upload-section">
       <div className="upload-container">
-        <button className="upload-back" onClick={onBack}><ArrowLeft size={18} /> Back to Home</button>
+        
+        <button className="upload-back" onClick={onBack}>
+          <ArrowLeft size={16} /> 
+          <span>Back to Dashboard</span>
+        </button>
 
-        <div className="upload-card fade-in">
+        <div className="upload-card fade-in-up">
           <div className="upload-card__hdr">
             <div className="upload-card__icon"><Sparkles size={24} /></div>
             <h1 className="upload-card__title">Analyze Your Resume</h1>
-            <p className="upload-card__desc">Upload your PDF resume and optionally add a job description for targeted matching.</p>
+            <p className="upload-card__desc">Upload your PDF resume and optionally add a job description for targeted ATS matching.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="upload-form">
             {/* Step 1 */}
             <div className="upload-step">
-              <div className="upload-step__lbl"><span className="upload-step__num">1</span> Upload Resume</div>
+              <div className="upload-step__hdr">
+                <span className="upload-step__num">1</span>
+                <span className="upload-step__title">Upload Resume</span>
+              </div>
               <div
                 className={`dropzone ${dragActive ? "dropzone--active" : ""} ${file ? "dropzone--filled" : ""}`}
                 onDragEnter={onDrag} onDragOver={onDrag} onDragLeave={onDrag} onDrop={onDrop}
@@ -112,22 +117,24 @@ function UploadForm({ onResult, onBack }) {
               >
                 <input ref={inputRef} type="file" accept=".pdf" onChange={onFileChange} className="dropzone__input" />
                 {file ? (
-                  <div className="dropzone__file">
+                  <div className="dropzone__file fade-in">
                     <div className="file-info">
                       <div className="file-icon"><FileText size={24} /></div>
                       <div className="file-details">
-                        <span className="file-name">{file.name}</span>
+                        <span className="file-name" title={file.name}>{file.name}</span>
                         <span className="file-size">{fmtSize(file.size)}</span>
                       </div>
-                      <button type="button" className="file-remove" onClick={(e) => { e.stopPropagation(); removeFile(); }}><X size={16} /></button>
+                      <button type="button" className="file-remove" onClick={(e) => { e.stopPropagation(); removeFile(); }} title="Remove file">
+                        <X size={16} />
+                      </button>
                     </div>
                     <div className="file-ready"><CheckCircle2 size={14} /> Ready for analysis</div>
                   </div>
                 ) : (
                   <div className="dropzone__placeholder">
                     <div className="dropzone__circle"><Upload size={28} /></div>
-                    <p><span className="dropzone__hl">Click to upload</span> or drag & drop</p>
-                    <p className="dropzone__hint">PDF files only • Max 10MB</p>
+                    <p className="dropzone__text"><span className="dropzone__hl">Click to upload</span> or drag and drop</p>
+                    <p className="dropzone__hint">PDF files only (Max 10MB)</p>
                   </div>
                 )}
               </div>
@@ -135,34 +142,49 @@ function UploadForm({ onResult, onBack }) {
 
             {/* Step 2 */}
             <div className="upload-step">
-              <div className="upload-step__lbl"><span className="upload-step__num">2</span> Job Description <span className="optional">(Optional)</span></div>
+              <div className="upload-step__hdr">
+                <span className="upload-step__num">2</span>
+                <span className="upload-step__title">Target Job Description <span className="upload-step__optional">(Optional but recommended)</span></span>
+              </div>
               <div className="textarea-wrap">
                 <textarea
                   className="upload-textarea"
-                  placeholder="Paste the job description here for a more accurate skills match..."
-                  value={jobDesc} onChange={handleJobDescChange} rows={6}
+                  placeholder="Paste the job description here to see how well your resume matches the role..."
+                  value={jobDesc} onChange={handleJobDescChange} rows={5}
                 />
-                {jobDesc && <div className="textarea-count">{jobDesc.length} / 5000 chars</div>}
+                <div className="textarea-footer">
+                  <span className="textarea-count">{jobDesc.length} / 5000</span>
+                </div>
               </div>
             </div>
 
             {error && (
-              <div className="upload-error"><AlertCircle size={16} /> {error}</div>
+              <div className="upload-alert fade-in">
+                <AlertCircle size={16} /> 
+                <span>{error}</span>
+              </div>
             )}
 
-            <button type="submit" className="upload-submit" disabled={!file || loading}>
-              {loading ? (
-                <span className="upload-loading">
-                  <span className="spinner"></span> Analyzing... <span className="prog-text">{Math.round(progress)}%</span>
-                </span>
-              ) : (
-                <><Sparkles size={18} /> Analyze & Match</>
+            <div className="upload-actions">
+              <button type="submit" className="upload-submit" disabled={!file || loading}>
+                {loading ? (
+                  <span className="upload-loading">
+                    <span className="spinner"></span> 
+                    <span>Analyzing... {Math.round(progress)}%</span>
+                  </span>
+                ) : (
+                  <>
+                    <Sparkles size={18} /> Analyze & Match
+                  </>
+                )}
+              </button>
+              
+              {loading && (
+                <div className="upload-progress fade-in">
+                  <div className="upload-progress-bar" style={{width: `${progress}%`}}></div>
+                </div>
               )}
-            </button>
-
-            {loading && (
-              <div className="prog-bar"><div className="prog-fill" style={{width: `${progress}%`}}></div></div>
-            )}
+            </div>
           </form>
         </div>
       </div>
