@@ -138,8 +138,8 @@ const forgotPassword = async (req, res) => {
     const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    // Create reset url
-    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+    // Create reset url - always use production URL as fallback
+    const clientUrl = process.env.CLIENT_URL || "https://resuscan-iwrc.onrender.com";
     const resetUrl = `${clientUrl}?resetToken=${resetToken}`;
 
     const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
