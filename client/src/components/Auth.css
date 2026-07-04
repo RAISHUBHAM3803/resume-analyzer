@@ -215,6 +215,8 @@
   background: none;
   border: none;
   color: #6366f1;
+  font-size: 14px;
+  font-family: inherit;
   font-weight: 700;
   cursor: pointer;
   margin-left: 6px;
