@@ -1,4 +1,4 @@
-import { Sparkles, Heart, Github, Twitter, Linkedin } from "lucide-react";
+import { Sparkles, Heart, Terminal, Globe, Briefcase } from "lucide-react";
 import "./Footer.css";
 
 function Footer() {
@@ -17,14 +17,14 @@ function Footer() {
               Advanced AI-powered resume analysis for landing your dream job faster.
             </p>
             <div className="footer__socials">
-              <a href="#" className="footer__social" aria-label="Twitter">
-                <Twitter size={18} />
+              <a href="#" className="footer__social" aria-label="Website">
+                <Globe size={18} />
               </a>
-              <a href="#" className="footer__social" aria-label="LinkedIn">
-                <Linkedin size={18} />
+              <a href="#" className="footer__social" aria-label="Portfolio">
+                <Briefcase size={18} />
               </a>
               <a href="#" className="footer__social" aria-label="GitHub">
-                <Github size={18} />
+                <Terminal size={18} />
               </a>
             </div>
           </div>
