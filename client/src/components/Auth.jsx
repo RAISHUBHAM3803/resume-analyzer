@@ -4,20 +4,28 @@ import { Mail, Lock, User, Sparkles, ArrowRight, AlertCircle, Eye, EyeOff, MailC
 import "./Auth.css";
 
 function Auth({ onAuthSuccess, goHome }) {
-  const [viewMode, setViewMode] = useState("login"); // "login", "register", "forgot"
+  const [viewMode, setViewMode] = useState("login"); // "login" | "register" | "forgot"
   const isLogin = viewMode === "login";
   const isRegister = viewMode === "register";
   const isForgot = viewMode === "forgot";
-  const [message, setMessage] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const switchView = (mode) => {
+    setViewMode(mode);
+    setError("");
+    setMessage("");
+    setFormData({ name: "", email: "", password: "" });
+    setShowPassword(false);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError("");
-    setMessage("");
+    if (error) setError("");
   };
 
   const handleSubmit = async (e) => {
@@ -26,7 +34,6 @@ function Auth({ onAuthSuccess, goHome }) {
     setError("");
     setMessage("");
 
-    // Client-side password validation on registration for better UX
     if (isRegister) {
       if (formData.password.length < 8) {
         setError("Password must be at least 8 characters.");
@@ -41,181 +48,212 @@ function Auth({ onAuthSuccess, goHome }) {
     }
 
     try {
-      let res;
       if (isForgot) {
-        res = await forgotPassword({ email: formData.email });
+        const res = await forgotPassword({ email: formData.email });
         setMessage(res.data.message || "Password reset email sent.");
         setLoading(false);
         return;
-      } else if (isLogin) {
-        res = await login({ email: formData.email, password: formData.password });
-      } else {
-        res = await register(formData);
       }
-      
+
+      const res = isLogin
+        ? await login({ email: formData.email, password: formData.password })
+        : await register(formData);
+
       localStorage.setItem("token", res.data.token);
       onAuthSuccess(res.data);
     } catch (err) {
-      setError(err.response?.data?.error || "Authentication failed. Please check your credentials.");
+      setError(err.response?.data?.error || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <section className="auth-section fade-in">
-      <div className="auth-container">
-        <button className="auth-back" onClick={goHome}>
-          <ArrowRight size={14} style={{ transform: "rotate(180deg)" }} /> Back to home
-        </button>
-        
-        <div className="auth-card">
-          {isForgot && message ? (
-            <div className="auth-success-state" style={{ textAlign: "center", padding: "2rem 1rem" }}>
-              <div style={{ display: "inline-flex", justifyContent: "center", alignItems: "center", width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "rgba(16, 185, 129, 0.1)", color: "#10b981", marginBottom: "1.5rem", border: "1px solid rgba(16, 185, 129, 0.2)" }}>
-                <MailCheck size={32} />
-              </div>
-              <h2 style={{ marginBottom: "1rem", fontSize: "1.5rem" }}>Check your inbox</h2>
-              <p style={{ color: "var(--text-secondary)", marginBottom: "2rem", lineHeight: "1.6" }}>
-                We've sent a password reset link to<br/>
-                <strong style={{ color: "var(--text)", marginTop: "0.5rem", display: "inline-block" }}>{formData.email}</strong>
-              </p>
-              <button 
-                className="auth-btn" 
-                onClick={() => { setViewMode("login"); setMessage(""); }}
-              >
-                Back to Sign in
-              </button>
+  // ── Email sent success screen ──────────────────────────────────────
+  if (isForgot && message) {
+    return (
+      <section className="auth-section">
+        <div className="auth-container">
+          <div className="auth-card auth-card--center">
+            <div className="auth-success-icon">
+              <MailCheck size={32} />
             </div>
-          ) : (
-            <>
-              <div className="auth-hdr">
-                <div className="auth-icon"><Sparkles size={24} /></div>
-                <h2>{isForgot ? "Reset Password" : (isLogin ? "Sign in" : "Create Account")}</h2>
-                <p>
-                  {isForgot
-                    ? "Enter your email to receive a password reset link."
-                    : (isLogin 
-                      ? "Enter your credentials to access your insights" 
-                      : "Join thousands of job seekers optimizing their careers.")}
-                </p>
-              </div>
+            <h2 className="auth-success-title">Check your inbox</h2>
+            <p className="auth-success-body">
+              We've sent a password reset link to<br />
+              <strong>{formData.email}</strong>
+            </p>
+            <p className="auth-success-note">
+              Didn't receive it? Check your spam folder or&nbsp;
+              <button className="auth-link" onClick={() => switchView("forgot")}>
+                try again
+              </button>.
+            </p>
+            <button className="auth-btn" onClick={() => switchView("login")}>
+              Back to Sign in <ArrowRight size={16} />
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
-              {error && (
-                <div className="auth-error">
-                  <AlertCircle size={16} /> {error}
-                </div>
-              )}
+  // ── Main form ──────────────────────────────────────────────────────
+  return (
+    <section className="auth-section">
+      <div className="auth-container">
 
-          <form className="auth-form" onSubmit={handleSubmit}>
+        <button className="auth-back-btn" onClick={goHome}>
+          <ArrowRight size={14} className="auth-back-icon" />
+          Back to home
+        </button>
+
+        <div className="auth-card">
+
+          {/* Header */}
+          <div className="auth-hdr">
+            <div className="auth-brand-icon">
+              <Sparkles size={22} />
+            </div>
+            <h1 className="auth-title">
+              {isForgot ? "Reset Password" : isLogin ? "Welcome back" : "Create account"}
+            </h1>
+            <p className="auth-subtitle">
+              {isForgot
+                ? "Enter your email and we'll send you a reset link."
+                : isLogin
+                ? "Sign in to access your resume insights."
+                : "Join thousands of job seekers optimizing their resumes."}
+            </p>
+          </div>
+
+          {/* Error banner */}
+          {error && (
+            <div className="auth-alert auth-alert--error" role="alert">
+              <AlertCircle size={15} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form className="auth-form" onSubmit={handleSubmit} noValidate>
+
+            {/* Full name (register only) */}
             {isRegister && (
-              <div className="input-group">
-                <label className="input-label">Full Name</label>
-                <div className="input-wrapper">
-                  <User className="input-icon-left" size={18} />
-                  <input 
-                    type="text" 
-                    name="name" 
-                    placeholder="John Doe" 
+              <div className="auth-field">
+                <label className="auth-label" htmlFor="auth-name">Full Name</label>
+                <div className="auth-input-wrap">
+                  <User className="auth-input-icon" size={17} />
+                  <input
+                    id="auth-name"
+                    type="text"
+                    name="name"
+                    placeholder="John Doe"
                     className="auth-input"
-                    required 
-                    value={formData.name} 
-                    onChange={handleChange} 
+                    required
+                    autoComplete="name"
+                    value={formData.name}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
             )}
-            
-            <div className="input-group">
-              <label className="input-label">Email</label>
-              <div className="input-wrapper">
-                <Mail className="input-icon-left" size={18} />
-                <input 
-                  type="email" 
-                  name="email" 
-                  placeholder="you@example.com" 
+
+            {/* Email */}
+            <div className="auth-field">
+              <label className="auth-label" htmlFor="auth-email">Email address</label>
+              <div className="auth-input-wrap">
+                <Mail className="auth-input-icon" size={17} />
+                <input
+                  id="auth-email"
+                  type="email"
+                  name="email"
+                  placeholder="you@example.com"
                   className="auth-input"
-                  required 
-                  value={formData.email} 
-                  onChange={handleChange} 
+                  required
+                  autoComplete="email"
+                  value={formData.email}
+                  onChange={handleChange}
                 />
               </div>
             </div>
 
+            {/* Password (login + register only) */}
             {!isForgot && (
-              <div className="input-group">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <label className="input-label">Password</label>
+              <div className="auth-field">
+                <div className="auth-label-row">
+                  <label className="auth-label" htmlFor="auth-password">Password</label>
                   {isLogin && (
-                    <button 
-                      type="button" 
-                      onClick={() => { setViewMode("forgot"); setError(""); setMessage(""); }}
-                      style={{ background: "none", border: "none", color: "var(--accent)", fontSize: "0.85rem", cursor: "pointer" }}
+                    <button
+                      type="button"
+                      className="auth-link"
+                      onClick={() => switchView("forgot")}
                     >
-                      Forgot Password?
+                      Forgot password?
                     </button>
                   )}
                 </div>
-              <div className="input-wrapper">
-                <Lock className="input-icon-left" size={18} />
-                <input 
-                  type={showPassword ? "text" : "password"} 
-                  name="password" 
-                  placeholder="••••••••" 
-                  className="auth-input"
-                  required 
-                  minLength={isLogin ? "6" : "8"} 
-                  value={formData.password} 
-                  onChange={handleChange} 
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
+                <div className="auth-input-wrap">
+                  <Lock className="auth-input-icon" size={17} />
+                  <input
+                    id="auth-password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="••••••••"
+                    className="auth-input auth-input--password"
+                    required
+                    autoComplete={isLogin ? "current-password" : "new-password"}
+                    minLength={isLogin ? 6 : 8}
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className="auth-eye-btn"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                  </button>
+                </div>
+                {isRegister && (
+                  <p className="auth-hint">Min 8 characters · at least 1 letter &amp; 1 number</p>
+                )}
               </div>
-              {isRegister && (
-                <span className="input-hint">Must be at least 8 characters with 1 letter & 1 number</span>
-              )}
-            </div>
             )}
 
-
+            {/* Submit */}
             <button type="submit" className="auth-btn" disabled={loading}>
               {loading ? (
-                <span className="spinner"></span>
+                <span className="auth-spinner" />
               ) : (
                 <>
-                  {isForgot ? "Send Reset Link" : (isLogin ? "Sign in" : "Get Started")} <ArrowRight size={18} />
+                  {isForgot ? "Send Reset Link" : isLogin ? "Sign in" : "Create account"}
+                  <ArrowRight size={17} />
                 </>
               )}
             </button>
           </form>
 
-          <div className="auth-footer">
+          {/* Footer */}
+          <p className="auth-footer-text">
             {isForgot ? (
-              <button 
-                className="auth-switch" 
-                onClick={() => { setViewMode("login"); setError(""); setMessage(""); }}
-              >
-                Back to Sign in
-              </button>
+              <>
+                Remember it?&nbsp;
+                <button className="auth-link" onClick={() => switchView("login")}>Sign in</button>
+              </>
+            ) : isLogin ? (
+              <>
+                Don't have an account?&nbsp;
+                <button className="auth-link" onClick={() => switchView("register")}>Sign up</button>
+              </>
             ) : (
               <>
-                {isLogin ? "New here? " : "Already have an account? "}
-                <button 
-                  className="auth-switch" 
-                  onClick={() => { setViewMode(isLogin ? "register" : "login"); setError(""); setMessage(""); }}
-                >
-                  {isLogin ? "Create an account" : "Sign in"}
-                </button>
+                Already have an account?&nbsp;
+                <button className="auth-link" onClick={() => switchView("login")}>Sign in</button>
               </>
             )}
-          </div>
-          </>
-          )}
+          </p>
+
         </div>
       </div>
     </section>
