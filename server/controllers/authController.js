@@ -144,11 +144,33 @@ const forgotPassword = async (req, res) => {
 
     const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
 
+    const htmlMessage = `
+      <div style="font-family: 'Inter', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eaeaea;">
+        <div style="background-color: #7c3aed; padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">ResuScan AI</h1>
+        </div>
+        <div style="padding: 40px 30px; color: #333333;">
+          <h2 style="margin-top: 0; font-size: 20px; color: #111827;">Password Reset Request</h2>
+          <p style="font-size: 16px; line-height: 1.6; color: #4b5563;">Hello,</p>
+          <p style="font-size: 16px; line-height: 1.6; color: #4b5563;">We received a request to reset your password. If you didn't make this request, you can safely ignore this email.</p>
+          <div style="text-align: center; margin: 35px 0;">
+            <a href="${resetUrl}" style="background-color: #8b5cf6; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; transition: background-color 0.3s ease;">Reset Your Password</a>
+          </div>
+          <p style="font-size: 14px; line-height: 1.6; color: #6b7280; margin-top: 30px;">Or copy and paste this link into your browser:</p>
+          <p style="font-size: 14px; line-height: 1.6; color: #8b5cf6; word-break: break-all;">${resetUrl}</p>
+        </div>
+        <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
+          <p style="font-size: 12px; color: #9ca3af; margin: 0;">&copy; ${new Date().getFullYear()} ResuScan AI. All rights reserved.</p>
+        </div>
+      </div>
+    `;
+
     try {
       await sendEmail({
         email: user.email,
-        subject: "Password reset token",
+        subject: "Password Reset - ResuScan AI",
         message,
+        html: htmlMessage,
       });
 
       res.status(200).json({ message: "Email sent" });
