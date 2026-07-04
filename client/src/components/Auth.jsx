@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { login, register, forgotPassword } from "../services/api";
-import { Mail, Lock, User, Sparkles, ArrowRight, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, User, Sparkles, ArrowRight, AlertCircle, Eye, EyeOff, MailCheck } from "lucide-react";
 import "./Auth.css";
 
 function Auth({ onAuthSuccess, goHome }) {
@@ -70,28 +70,42 @@ function Auth({ onAuthSuccess, goHome }) {
         </button>
         
         <div className="auth-card">
-          <div className="auth-hdr">
-            <div className="auth-icon"><Sparkles size={24} /></div>
-            <h2>{isForgot ? "Reset Password" : (isLogin ? "Sign in" : "Create Account")}</h2>
-            <p>
-              {isForgot
-                ? "Enter your email to receive a password reset link."
-                : (isLogin 
-                  ? "Enter your credentials to access your insights" 
-                  : "Join thousands of job seekers optimizing their careers.")}
-            </p>
-          </div>
+          {isForgot && message ? (
+            <div className="auth-success-state" style={{ textAlign: "center", padding: "2rem 1rem" }}>
+              <div style={{ display: "inline-flex", justifyContent: "center", alignItems: "center", width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "rgba(16, 185, 129, 0.1)", color: "#10b981", marginBottom: "1.5rem", border: "1px solid rgba(16, 185, 129, 0.2)" }}>
+                <MailCheck size={32} />
+              </div>
+              <h2 style={{ marginBottom: "1rem", fontSize: "1.5rem" }}>Check your inbox</h2>
+              <p style={{ color: "var(--text-secondary)", marginBottom: "2rem", lineHeight: "1.6" }}>
+                We've sent a password reset link to<br/>
+                <strong style={{ color: "var(--text)", marginTop: "0.5rem", display: "inline-block" }}>{formData.email}</strong>
+              </p>
+              <button 
+                className="auth-btn" 
+                onClick={() => { setViewMode("login"); setMessage(""); }}
+              >
+                Back to Sign in
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="auth-hdr">
+                <div className="auth-icon"><Sparkles size={24} /></div>
+                <h2>{isForgot ? "Reset Password" : (isLogin ? "Sign in" : "Create Account")}</h2>
+                <p>
+                  {isForgot
+                    ? "Enter your email to receive a password reset link."
+                    : (isLogin 
+                      ? "Enter your credentials to access your insights" 
+                      : "Join thousands of job seekers optimizing their careers.")}
+                </p>
+              </div>
 
-          {error && (
-            <div className="auth-error">
-              <AlertCircle size={16} /> {error}
-            </div>
-          )}
-          {message && (
-            <div className="auth-error" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)", color: "#10b981", border: "1px solid rgba(16, 185, 129, 0.2)" }}>
-              <Sparkles size={16} /> {message}
-            </div>
-          )}
+              {error && (
+                <div className="auth-error">
+                  <AlertCircle size={16} /> {error}
+                </div>
+              )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
             {isRegister && (
@@ -182,24 +196,21 @@ function Auth({ onAuthSuccess, goHome }) {
 
           <div className="auth-footer">
             {isForgot ? (
-              <button 
-                className="auth-switch" 
-                onClick={() => { setViewMode("login"); setError(""); setMessage(""); }}
-              >
-                Back to Sign in
-              </button>
+              <p>
+                Remember your password? <button type="button" onClick={() => { setViewMode("login"); setError(""); setMessage(""); }}>Sign in</button>
+              </p>
+            ) : isLogin ? (
+              <p>
+                Don't have an account? <button type="button" onClick={() => { setViewMode("register"); setError(""); setMessage(""); }}>Sign up</button>
+              </p>
             ) : (
-              <>
-                {isLogin ? "New here? " : "Already have an account? "}
-                <button 
-                  className="auth-switch" 
-                  onClick={() => { setViewMode(isLogin ? "register" : "login"); setError(""); setMessage(""); }}
-                >
-                  {isLogin ? "Create an account" : "Sign in"}
-                </button>
-              </>
+              <p>
+                Already have an account? <button type="button" onClick={() => { setViewMode("login"); setError(""); setMessage(""); }}>Sign in</button>
+              </p>
             )}
           </div>
+          </>
+          )}
         </div>
       </div>
     </section>
