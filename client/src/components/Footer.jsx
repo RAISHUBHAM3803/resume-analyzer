@@ -1,75 +1,71 @@
-import { Sparkles, Heart, Terminal, Globe, Briefcase } from "lucide-react";
+import { Sparkles, Heart, ExternalLink } from "lucide-react";
 import "./Footer.css";
 
 function Footer() {
+  const year = new Date().getFullYear();
+
   return (
     <footer className="footer">
       <div className="footer__container">
+
+        {/* ── Top divider line ── */}
         <div className="footer__top">
-          
-          <div className="footer__brand-col">
+
+          {/* Brand */}
+          <div className="footer__brand">
             <div className="footer__logo">
-              <div className="footer__logo-icon"><Sparkles size={16}/></div>
-              <span className="footer__logo-text">Resu<span className="gradient-text">Scan</span></span>
+              <div className="footer__logo-icon"><Sparkles size={16} /></div>
+              <span className="footer__logo-text">
+                Resu<span className="gradient-text">Scan</span>
+              </span>
               <span className="footer__badge">AI</span>
             </div>
             <p className="footer__tagline">
-              Advanced AI-powered resume analysis for landing your dream job faster.
+              AI-powered resume analysis. Get your ATS score, skill gaps, and actionable improvements in seconds.
             </p>
-            <div className="footer__socials">
-              <a href="#" className="footer__social" aria-label="Website">
-                <Globe size={18} />
-              </a>
-              <a href="#" className="footer__social" aria-label="Portfolio">
-                <Briefcase size={18} />
-              </a>
-              <a href="#" className="footer__social" aria-label="GitHub">
-                <Terminal size={18} />
-              </a>
-            </div>
           </div>
-          
-          <div className="footer__links-grid">
-            <div className="footer__col">
-              <h4 className="footer__col-title">Product</h4>
-              <ul className="footer__link-list">
-                <li><a href="#features" className="footer__link">Features</a></li>
-                <li><a href="#how-it-works" className="footer__link">How it Works</a></li>
-                <li><a href="#" className="footer__link">Pricing</a></li>
-                <li><a href="#" className="footer__link">Changelog</a></li>
+
+          {/* Navigation links — only real pages */}
+          <nav className="footer__nav" aria-label="Footer navigation">
+            <div className="footer__nav-col">
+              <h4 className="footer__nav-title">Navigate</h4>
+              <ul className="footer__nav-list">
+                <li><a href="#features" className="footer__nav-link">Features</a></li>
+                <li><a href="#how-it-works" className="footer__nav-link">How it Works</a></li>
               </ul>
             </div>
-            
-            <div className="footer__col">
-              <h4 className="footer__col-title">Resources</h4>
-              <ul className="footer__link-list">
-                <li><a href="#" className="footer__link">Documentation</a></li>
-                <li><a href="#" className="footer__link">Resume Tips</a></li>
-                <li><a href="#" className="footer__link">Blog</a></li>
-                <li><a href="#" className="footer__link">Support</a></li>
+
+            <div className="footer__nav-col">
+              <h4 className="footer__nav-title">Project</h4>
+              <ul className="footer__nav-list">
+                <li>
+                  <a
+                    href="https://github.com/RAISHUBHAM3803/resume-analyzer"
+                    className="footer__nav-link footer__nav-link--ext"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GitHub <ExternalLink size={12} />
+                  </a>
+                </li>
               </ul>
             </div>
-            
-            <div className="footer__col">
-              <h4 className="footer__col-title">Legal</h4>
-              <ul className="footer__link-list">
-                <li><a href="#" className="footer__link">Privacy Policy</a></li>
-                <li><a href="#" className="footer__link">Terms of Service</a></li>
-                <li><a href="#" className="footer__link">Cookie Policy</a></li>
-              </ul>
-            </div>
-          </div>
-          
+          </nav>
+
         </div>
-        
+
+        {/* ── Bottom bar ── */}
         <div className="footer__bottom">
           <p className="footer__copyright">
-            &copy; {new Date().getFullYear()} ResuScan AI. All rights reserved.
+            © {year} ResuScan AI. Built with{" "}
+            <Heart size={13} className="footer__heart" />{" "}
+            by Shubham Rai.
           </p>
-          <p className="footer__made-with">
-            Made with <Heart size={14} className="footer__heart" /> for job seekers worldwide
+          <p className="footer__stack">
+            React · Node.js · MongoDB · Groq AI
           </p>
         </div>
+
       </div>
     </footer>
   );
