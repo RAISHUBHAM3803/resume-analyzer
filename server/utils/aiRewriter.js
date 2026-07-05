@@ -43,13 +43,13 @@ Output exactly a JSON object in the following format with NO markdown formatting
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "llama3-8b-8192",
+        model: "llama-3.1-8b-instant",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Original Bullet Point:\n"${bulletPoint}"` }
         ],
         temperature: 0.7,
-        max_tokens: 300,
+        max_tokens: 500,
         response_format: { type: "json_object" }
       }),
     });
