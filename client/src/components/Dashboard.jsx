@@ -1,26 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,
-} from "chart.js";
 import {
   ArrowLeft, Trophy, Target, Brain, Sparkles, CheckCircle2, XCircle,
-  TrendingUp, FileText, Zap, Award, BarChart3, Download, MessageSquare, Info, Wand2, Copy, AlertCircle
+  TrendingUp, FileText, Zap, Award, Download, MessageSquare, Info, Wand2, Copy, AlertCircle,
+  Briefcase
 } from "lucide-react";
 import { rewriteBullet } from "../services/api";
 import "./Dashboard.css";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
 /* Animated SVG score ring */
-function ScoreRing({ score, size = 160, stroke = 12 }) {
+function ScoreRing({ score, size = 180, stroke = 14 }) {
   const r = (size - stroke) / 2;
   const circ = 2 * Math.PI * r;
   const offset = circ - (score / 100) * circ;
   const circleRef = useRef(null);
 
   const color = score >= 80 ? "var(--accent-green)" : score >= 60 ? "var(--accent-orange)" : score >= 40 ? "var(--accent-blue)" : "var(--accent-red)";
-  const label = score >= 80 ? "Excellent" : score >= 60 ? "Good" : score >= 40 ? "Average" : "Needs Work";
+  const label = score >= 80 ? "Excellent Match" : score >= 60 ? "Good Match" : score >= 40 ? "Average Match" : "Needs Work";
 
   useEffect(() => {
     if (circleRef.current) {
@@ -67,13 +62,13 @@ function MiniScore({ icon, label, value, color }) {
 
   return (
     <div className="mini-score">
-      <div className="mini-score__icon" style={{ background: `rgba(255,255,255,0.05)`, color }}>
-        {icon}
-      </div>
-      <div className="mini-score__info">
-        <span className="mini-score__lbl">{label}</span>
+      <div className="mini-score__header">
+        <div className="mini-score__icon" style={{ background: `rgba(255,255,255,0.05)`, color }}>
+          {icon}
+        </div>
         <span className="mini-score__val" style={{ color }}>{value}%</span>
       </div>
+      <span className="mini-score__lbl">{label}</span>
       <div className="mini-score__track">
         <div ref={barRef} className="mini-score__fill" style={{ background: color, width: 0, transition: "width 1s cubic-bezier(0.22,1,0.36,1) 0.3s" }} />
       </div>
@@ -113,39 +108,12 @@ function Dashboard({ data, onReset }) {
     window.print();
   };
 
-  const barData = {
-    labels: ["Skills", "Experience", "Education", "Keywords"],
-    datasets: [{
-      label: "Score",
-      data: [match.skillsScore, match.experienceScore, match.educationScore, match.keywordScore],
-      backgroundColor: ["rgba(99,102,241,0.6)", "rgba(16,185,129,0.6)", "rgba(59,130,246,0.6)", "rgba(245,158,11,0.6)"],
-      borderColor: ["#6366f1", "#10b981", "#3b82f6", "#f59e0b"],
-      borderWidth: 2, borderRadius: 8, borderSkipped: false,
-    }],
-  };
-
-  const barOpts = {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: "rgba(18,19,32,0.95)", padding: 12, cornerRadius: 8,
-        borderColor: "rgba(255,255,255,0.1)", borderWidth: 1,
-        titleFont: { family: "Inter", size: 14, weight: "bold" },
-        bodyFont: { family: "Inter", size: 13 }
-      },
-    },
-    scales: {
-      y: { beginAtZero: true, max: 100, grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#9ca3af", stepSize: 25, font: { family: "Inter" } }, border: { display: false } },
-      x: { grid: { display: false }, ticks: { color: "#9ca3af", font: { family: "Inter" } }, border: { display: false } },
-    },
-  };
-
   const feedbackLines = (feedback || "").split("\n").filter(Boolean);
 
   return (
     <section className="dash-section">
       <div className="dash fade-in-up" id="report-content">
+        
         {/* Header */}
         <div className="dash__hdr">
           <div className="dash__actions">
@@ -153,14 +121,15 @@ function Dashboard({ data, onReset }) {
               <ArrowLeft size={16} /> New Analysis
             </button>
             <button className="dash__btn dash__btn--primary" onClick={handlePrint}>
-              <Download size={16} /> Download PDF
+              <Download size={16} /> Export PDF
             </button>
           </div>
           <div className="dash__title-row">
             <div>
               <h1 className="dash__title">Analysis Results</h1>
               <div className="dash__domain">
-                <span className="dash__domain-label">Domain:</span> {data.domain || "Software Engineering"}
+                <Briefcase size={16} className="c-muted" />
+                <span className="dash__domain-label">Target Role:</span> {data.domain || "Software Engineering"}
               </div>
             </div>
             <span className="dash__ai-badge">
@@ -169,7 +138,7 @@ function Dashboard({ data, onReset }) {
           </div>
         </div>
 
-        {/* Nudge banner — only shown when no job description was used */}
+        {/* Nudge banner */}
         {match.generalAnalysis && (
           <div className="dash__nudge fade-in">
             <Info size={18} className="dash__nudge-icon" />
@@ -181,59 +150,37 @@ function Dashboard({ data, onReset }) {
           </div>
         )}
 
-        <div className="dash__grid">
-          {/* Hero card */}
-          <div className="dcard dcard--hero">
-            <div className="dcard__hero-left">
-              <div className="dcard__hero-lbl"><Trophy size={18} /> Overall Job Match</div>
+        {/* Bento Grid Layout */}
+        <div className="bento-grid">
+          
+          {/* 1. Main Score Card */}
+          <div className="bcard bcard--main-score">
+            <div className="bcard__header">
+              <Trophy size={18} /> <span>Overall ATS Match</span>
+            </div>
+            <div className="bcard__content-center">
               <ScoreRing score={match.finalScore} />
-            </div>
-            
-            <div className="dcard__hero-center">
-              <div className="mini-stat">
-                <div className="mini-stat__hdr">
-                  <span className="mini-stat__lbl"><FileText size={16} /> Structure</span>
-                  <span className="mini-stat__val">{match.structureScore}%</span>
+              
+              <div className="main-score__stats">
+                <div className="mstat">
+                  <span className="mstat__lbl"><CheckCircle2 size={14} className="c-green" /> Matched</span>
+                  <span className="mstat__val">{match.matchingSkills.length} Skills</span>
                 </div>
-                <div className="mini-stat__bar"><div className="mini-stat__fill" style={{ width: `${match.structureScore}%`, background: "var(--accent-secondary)" }}></div></div>
-              </div>
-              <div className="mini-stat">
-                <div className="mini-stat__hdr">
-                  <span className="mini-stat__lbl"><CheckCircle2 size={16} /> Contact Info</span>
-                  <span className="mini-stat__val">{match.contactScore}%</span>
-                </div>
-                <div className="mini-stat__bar"><div className="mini-stat__fill" style={{ width: `${match.contactScore}%`, background: "var(--accent-green)" }}></div></div>
-              </div>
-            </div>
-
-            <div className="dcard__hero-right">
-              <div className="dcard__ats">
-                <span className="dcard__ats-lbl">ATS Match Score</span>
-                <span className="dcard__ats-val">{score}<span className="dcard__ats-max">/100</span></span>
-              </div>
-              <div className="dcard__hero-stats">
-                <div className="dcard__hstat">
-                  <div className="dcard__hstat-icon" style={{color: "var(--accent-green)"}}><CheckCircle2 size={16} /></div>
-                  <div className="dcard__hstat-content">
-                    <span className="dcard__hstat-val">{match.matchingSkills.length}</span>
-                    <span className="dcard__hstat-lbl">Skills Matched</span>
-                  </div>
-                </div>
-                <div className="dcard__hstat">
-                  <div className="dcard__hstat-icon" style={{color: "var(--accent-red)"}}><XCircle size={16} /></div>
-                  <div className="dcard__hstat-content">
-                    <span className="dcard__hstat-val">{match.missingSkills.length}</span>
-                    <span className="dcard__hstat-lbl">Skills Missing</span>
-                  </div>
+                <div className="mstat-div"></div>
+                <div className="mstat">
+                  <span className="mstat__lbl"><XCircle size={14} className="c-red" /> Missing</span>
+                  <span className="mstat__val">{match.missingSkills.length} Skills</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Mini scores */}
-          <div className="dcard dcard--scores">
-            <div className="dcard__label"><BarChart3 size={16} /> Score Breakdown</div>
-            <div className="mini-grid">
+          {/* 2. Mini Scores Grid */}
+          <div className="bcard bcard--mini-scores">
+            <div className="bcard__header">
+              <BarChart3 size={18} /> <span>Score Breakdown</span>
+            </div>
+            <div className="mini-scores-grid">
               <MiniScore icon={<Target size={18}/>} label="Skills Match" value={match.skillsScore} color="var(--accent-secondary)" />
               <MiniScore icon={<TrendingUp size={18}/>} label="Experience" value={match.experienceScore} color="var(--accent-green)" />
               <MiniScore icon={<Award size={18}/>} label="Education" value={match.educationScore} color="var(--accent-blue)" />
@@ -241,47 +188,44 @@ function Dashboard({ data, onReset }) {
             </div>
           </div>
 
-          {/* Chart */}
-          <div className="dcard dcard--chart">
-            <div className="dcard__label"><BarChart3 size={16} /> Visual Breakdown</div>
-            <div className="chart-wrap"><Bar data={barData} options={barOpts} /></div>
-          </div>
-
-          {/* Skills */}
-          <div className="dcard dcard--skills">
-            <div className="dcard__label"><Target size={16} /> Skills Mapping</div>
-            <div className="skills-grid">
-              <div className="skills-group">
+          {/* 3. Skills Mapping */}
+          <div className="bcard bcard--skills">
+            <div className="bcard__header">
+              <Target size={18} /> <span>Skills Mapping</span>
+            </div>
+            <div className="bcard__skills-content">
+              <div className="skills-col">
                 <div className="skills-hdr">
-                  <CheckCircle2 size={18} className="c-green" /> 
-                  <span>Matching Skills</span> 
+                  <CheckCircle2 size={16} className="c-green" /> 
+                  <span>Found in Resume</span> 
                   <span className="skills-cnt c-green-bg">{match.matchingSkills.length}</span>
                 </div>
                 <div className="skills-tags">
                   {match.matchingSkills.length > 0
-                    ? match.matchingSkills.map((s) => <span key={s} className="stag stag--ok"><CheckCircle2 size={14}/> {s}</span>)
-                    : <span className="skills-empty">No matching skills detected. Consider adding some from the job description.</span>}
+                    ? match.matchingSkills.map((s) => <span key={s} className="stag stag--ok">{s}</span>)
+                    : <span className="skills-empty">No matching skills detected.</span>}
                 </div>
               </div>
-              <div className="skills-group">
+              
+              <div className="skills-col">
                 <div className="skills-hdr">
-                  <XCircle size={18} className="c-red" /> 
-                  <span>Missing Skills</span> 
+                  <XCircle size={16} className="c-red" /> 
+                  <span>Missing (Add These)</span> 
                   <span className="skills-cnt c-red-bg">{match.missingSkills.length}</span>
                 </div>
                 <div className="skills-tags">
                   {match.missingSkills.length > 0
-                    ? match.missingSkills.map((s) => <span key={s} className="stag stag--miss"><XCircle size={14}/> {s}</span>)
-                    : <span className="skills-empty skills-empty--ok"><Sparkles size={16}/> Perfect match! Your resume contains all key skills.</span>}
+                    ? match.missingSkills.map((s) => <span key={s} className="stag stag--miss">{s}</span>)
+                    : <span className="skills-empty skills-empty--ok"><Sparkles size={16}/> Perfect match!</span>}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* AI Recommendations */}
-          <div className="dcard dcard--ai">
-            <div className="dcard__label dcard__label--ai">
-              <Brain size={16} /> AI Recommendations <span className="ai-pill">Powered by AI</span>
+          {/* 4. AI Recommendations & Interview (Left Column Bottom) */}
+          <div className="bcard bcard--feedback">
+            <div className="bcard__header">
+              <Brain size={18} /> <span>Actionable Feedback</span>
             </div>
             <ul className="ai-list">
               {feedbackLines.map((line, i) => (
@@ -291,72 +235,75 @@ function Dashboard({ data, onReset }) {
                 </li>
               ))}
             </ul>
-          </div>
-          
-          {/* AI Mock Interview Questions */}
-          {questions && questions.length > 0 && (
-            <div className="dcard dcard--ai dcard--interview">
-              <div className="dcard__label dcard__label--ai">
-                <MessageSquare size={16} /> Mock Interview Prep <span className="ai-pill ai-pill--alt">Powered by AI</span>
-              </div>
-              <p className="interview-desc">Practice answering these technical questions tailored to the skills found on your resume:</p>
-              <div className="q-list">
-                {questions.map((q, i) => (
-                  <div key={i} className="q-card fade-in-up" style={{ animationDelay: `${0.1 * i}s` }}>
-                    <div className="q-num">Q{i + 1}</div>
-                    <div className="q-text">{q}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
-          {/* AI Resume Tailoring (Auto-Rewriter) */}
-          <div className="dcard dcard--ai dcard--rewriter">
-            <div className="dcard__label dcard__label--ai">
-              <Wand2 size={16} /> Resume Tailoring <span className="ai-pill ai-pill--alt">Powered by AI</span>
-            </div>
-            <p className="rewriter-desc">Paste a bullet point from your resume to rewrite it using the STAR method, tailored to your target job description.</p>
-            
-            <div className="rewriter-input-group">
-              <textarea 
-                className="rewriter-textarea"
-                placeholder="e.g., I coded the frontend for the application..."
-                value={rewriteInput}
-                onChange={(e) => setRewriteInput(e.target.value)}
-                rows={3}
-              />
-              <button 
-                className="rewriter-btn"
-                onClick={handleRewrite}
-                disabled={!rewriteInput.trim() || rewriteLoading}
-              >
-                {rewriteLoading ? <span className="spinner"></span> : <><Wand2 size={16} /> Rewrite</>}
-              </button>
-            </div>
-
-            {rewriteError && (
-              <div className="rewriter-alert">
-                <AlertCircle size={16} /> {rewriteError}
-              </div>
-            )}
-
-            {rewriteSuggestions && (
-              <div className="rewriter-results fade-in">
-                <p className="rewriter-results-title">AI Suggestions:</p>
-                <div className="rewriter-suggestions">
-                  {rewriteSuggestions.map((s, i) => (
-                    <div key={i} className="rsug-card">
-                      <div className="rsug-text">{s}</div>
-                      <button className="rsug-copy" onClick={() => copyToClipboard(s)} title="Copy to clipboard">
-                        <Copy size={14} />
-                      </button>
+            {questions && questions.length > 0 && (
+              <>
+                <div className="bcard__header" style={{ marginTop: '32px' }}>
+                  <MessageSquare size={18} /> <span>Interview Prep</span>
+                </div>
+                <div className="q-list">
+                  {questions.map((q, i) => (
+                    <div key={i} className="q-card fade-in-up" style={{ animationDelay: `${0.1 * i}s` }}>
+                      <div className="q-num">Q{i + 1}</div>
+                      <div className="q-text">{q}</div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </>
             )}
           </div>
+
+          {/* 5. AI Bullet Rewriter (Right Column Bottom) */}
+          <div className="bcard bcard--rewriter">
+            <div className="bcard__header">
+              <Wand2 size={18} /> <span>AI Bullet Rewriter</span>
+            </div>
+            <div className="rewriter-content">
+              <p className="rewriter-desc">
+                Paste a weak bullet point from your resume. Our AI will rewrite it using the STAR method, perfectly tailored to your target job.
+              </p>
+              
+              <div className="rewriter-input-group">
+                <textarea 
+                  className="rewriter-textarea"
+                  placeholder="e.g., I coded the frontend for the application..."
+                  value={rewriteInput}
+                  onChange={(e) => setRewriteInput(e.target.value)}
+                  rows={4}
+                />
+                <button 
+                  className="rewriter-btn"
+                  onClick={handleRewrite}
+                  disabled={!rewriteInput.trim() || rewriteLoading}
+                >
+                  {rewriteLoading ? <span className="spinner"></span> : <><Wand2 size={16} /> Rewrite Bullet</>}
+                </button>
+              </div>
+
+              {rewriteError && (
+                <div className="rewriter-alert">
+                  <AlertCircle size={16} /> {rewriteError}
+                </div>
+              )}
+
+              {rewriteSuggestions && (
+                <div className="rewriter-results fade-in">
+                  <p className="rewriter-results-title">AI Suggestions:</p>
+                  <div className="rewriter-suggestions">
+                    {rewriteSuggestions.map((s, i) => (
+                      <div key={i} className="rsug-card">
+                        <div className="rsug-text">{s}</div>
+                        <button className="rsug-copy" onClick={() => copyToClipboard(s)} title="Copy to clipboard">
+                          <Copy size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
