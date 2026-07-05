@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+// Uses Node.js built-in fetch (Node 18+) — no external dependency needed
 
 // Uses a dedicated key for the Bullet Rewriter feature (Groq API).
 // Falls back to the shared GROQ_API_KEY if BULLET_REWRITER_API_KEY is not set.
