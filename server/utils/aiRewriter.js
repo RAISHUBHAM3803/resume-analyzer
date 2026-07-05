@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-// Uses a dedicated key for the Bullet Rewriter feature.
+// Uses a dedicated key for the Bullet Rewriter feature (Groq API).
 // Falls back to the shared GROQ_API_KEY if BULLET_REWRITER_API_KEY is not set.
 const GROQ_API_KEY = process.env.BULLET_REWRITER_API_KEY || process.env.GROQ_API_KEY;
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -15,7 +15,7 @@ const rewriteBulletPoint = async (bulletPoint, jobDescription, domain) => {
   };
 
   if (!GROQ_API_KEY) {
-    console.warn("GROQ_API_KEY is not set. Falling back to default suggestions.");
+    console.warn("BULLET_REWRITER_API_KEY is not set. Falling back to default suggestions.");
     return fallbackResponse;
   }
 
@@ -43,14 +43,14 @@ Output exactly a JSON object in the following format with NO markdown formatting
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "llama3-8b-8192", // Fast and capable model on Groq
+        model: "llama3-8b-8192",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Original Bullet Point:\n"${bulletPoint}"` }
         ],
         temperature: 0.7,
         max_tokens: 300,
-        response_format: { type: "json_object" } // Groq supports JSON mode for Llama 3
+        response_format: { type: "json_object" }
       }),
     });
 
@@ -63,11 +63,13 @@ Output exactly a JSON object in the following format with NO markdown formatting
     
     const parsed = JSON.parse(generatedText);
     return {
-      suggestions: parsed.suggestions && parsed.suggestions.length > 0 ? parsed.suggestions : fallbackResponse.suggestions
+      suggestions: parsed.suggestions && parsed.suggestions.length > 0
+        ? parsed.suggestions
+        : fallbackResponse.suggestions
     };
 
   } catch (error) {
-    console.error("Groq API Error:", error.message);
+    console.error("Groq Bullet Rewriter Error:", error.message);
     return fallbackResponse;
   }
 };
