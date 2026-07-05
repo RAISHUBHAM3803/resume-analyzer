@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft, Trophy, Target, Brain, Sparkles, CheckCircle2, XCircle,
-  TrendingUp, FileText, Zap, Award, Download, MessageSquare, Info, Wand2, Copy, AlertCircle,
+  TrendingUp, FileText, Zap, Award, BarChart3, Download, MessageSquare, Info, Wand2, Copy, AlertCircle,
   Briefcase
 } from "lucide-react";
 import { rewriteBullet } from "../services/api";
