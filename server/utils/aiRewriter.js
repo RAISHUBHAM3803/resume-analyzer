@@ -1,7 +1,8 @@
 const fetch = require('node-fetch');
 
-// Groq API configuration
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
+// Uses a dedicated key for the Bullet Rewriter feature.
+// Falls back to the shared GROQ_API_KEY if BULLET_REWRITER_API_KEY is not set.
+const GROQ_API_KEY = process.env.BULLET_REWRITER_API_KEY || process.env.GROQ_API_KEY;
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const rewriteBulletPoint = async (bulletPoint, jobDescription, domain) => {

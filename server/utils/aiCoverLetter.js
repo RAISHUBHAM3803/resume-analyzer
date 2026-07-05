@@ -1,10 +1,17 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+// Uses a dedicated key for the Cover Letter feature.
+// Falls back to the shared GEMINI_API_KEY if COVER_LETTER_API_KEY is not set.
+const getCoverLetterClient = () => {
+  const apiKey = process.env.COVER_LETTER_API_KEY || process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+  return new GoogleGenerativeAI(apiKey);
+};
 
 const generateCoverLetter = async (resumeText, jobDescription) => {
+  const genAI = getCoverLetterClient();
   if (!genAI) {
-    return "Error: Gemini API key is not configured. Cover letter generation requires the API key.";
+    return "Error: Cover Letter API key is not configured. Please set COVER_LETTER_API_KEY in your environment variables.";
   }
 
   try {

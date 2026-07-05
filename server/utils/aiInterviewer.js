@@ -1,10 +1,17 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+// Uses a dedicated key for the Mock Interview feature.
+// Falls back to the shared GEMINI_API_KEY if MOCK_INTERVIEW_API_KEY is not set.
+const getMockInterviewClient = () => {
+  const apiKey = process.env.MOCK_INTERVIEW_API_KEY || process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+  return new GoogleGenerativeAI(apiKey);
+};
 
 const chatWithInterviewer = async (message, history, resumeText, jobDescription) => {
+  const genAI = getMockInterviewClient();
   if (!genAI) {
-    throw new Error("Gemini API key is not configured.");
+    throw new Error("Mock Interview API key is not configured. Please set MOCK_INTERVIEW_API_KEY in your environment variables.");
   }
 
   try {
