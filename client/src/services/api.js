@@ -38,3 +38,9 @@ export const deleteHistory = (timeframe) =>
 
 export const rewriteBullet = (data) => 
   API.post("/resume/rewrite", data);
+
+export const generateCoverLetter = (data) =>
+  API.post("/resume/cover-letter", data);
+
+export const mockInterview = (data) =>
+  API.post("/resume/mock-interview", data);

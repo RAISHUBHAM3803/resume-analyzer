@@ -4,7 +4,10 @@ import {
   TrendingUp, FileText, Zap, Award, BarChart3, Download, MessageSquare, Info, Wand2, Copy, AlertCircle,
   Briefcase
 } from "lucide-react";
-import { rewriteBullet } from "../services/api";
+import { rewriteBullet, generateCoverLetter } from "../services/api";
+import CoverLetterModal from "./CoverLetterModal";
+import InterviewChat from "./InterviewChat";
+import html2pdf from "html2pdf.js";
 import "./Dashboard.css";
 
 /* Animated SVG score ring */
@@ -85,6 +88,28 @@ function Dashboard({ data, onReset }) {
   const [rewriteSuggestions, setRewriteSuggestions] = useState(null);
   const [rewriteError, setRewriteError] = useState("");
 
+  const [showCoverLetterModal, setShowCoverLetterModal] = useState(false);
+  const [coverLetterText, setCoverLetterText] = useState("");
+  const [coverLetterLoading, setCoverLetterLoading] = useState(false);
+
+  const [showInterviewModal, setShowInterviewModal] = useState(false);
+
+  const handleGenerateCoverLetter = async () => {
+    setCoverLetterLoading(true);
+    try {
+      const res = await generateCoverLetter({ 
+        resumeText: data.text, 
+        jobDescription: data.jobDescription 
+      });
+      setCoverLetterText(res.data.coverLetter);
+      setShowCoverLetterModal(true);
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to generate cover letter.");
+    } finally {
+      setCoverLetterLoading(false);
+    }
+  };
+
   const handleRewrite = async () => {
     if (!rewriteInput.trim()) return;
     setRewriteLoading(true);
@@ -105,7 +130,15 @@ function Dashboard({ data, onReset }) {
   };
 
   const handlePrint = () => {
-    window.print();
+    const element = document.getElementById("report-content");
+    const opt = {
+      margin:       0.5,
+      filename:     'Resume_Analysis_Report.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#020617' },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
   };
 
   const feedbackLines = (feedback || "").split("\n").filter(Boolean);
@@ -119,6 +152,10 @@ function Dashboard({ data, onReset }) {
           <div className="dash__actions">
             <button className="dash__btn" onClick={onReset}>
               <ArrowLeft size={16} /> New Analysis
+            </button>
+            <button className="dash__btn" onClick={handleGenerateCoverLetter} disabled={coverLetterLoading}>
+              {coverLetterLoading ? <span className="spinner" style={{borderColor:"rgba(255,255,255,0.3)", borderTopColor:"#fff", width:"14px", height:"14px", borderWidth:"2px"}}></span> : <FileText size={16} />} 
+              {coverLetterLoading ? "Generating..." : "Cover Letter"}
             </button>
             <button className="dash__btn dash__btn--primary" onClick={handlePrint}>
               <Download size={16} /> Export PDF
@@ -249,6 +286,13 @@ function Dashboard({ data, onReset }) {
                     </div>
                   ))}
                 </div>
+                <button 
+                  className="dash__btn dash__btn--primary fade-in" 
+                  style={{ marginTop: '16px', width: '100%', justifyContent: 'center' }}
+                  onClick={() => setShowInterviewModal(true)}
+                >
+                  <MessageSquare size={16} /> Start AI Mock Interview
+                </button>
               </>
             )}
           </div>
@@ -306,6 +350,21 @@ function Dashboard({ data, onReset }) {
 
         </div>
       </div>
+      
+      {showCoverLetterModal && (
+        <CoverLetterModal 
+          coverLetter={coverLetterText}
+          onClose={() => setShowCoverLetterModal(false)}
+        />
+      )}
+
+      {showInterviewModal && (
+        <InterviewChat
+          resumeText={data.text}
+          jobDescription={data.jobDescription}
+          onClose={() => setShowInterviewModal(false)}
+        />
+      )}
     </section>
   );
 }

@@ -159,4 +159,40 @@ const rewriteBulletPoint = async (req, res) => {
   }
 };
 
-module.exports = { uploadResume, getHistory, deleteHistory, rewriteBulletPoint };
+const generateCoverLetterHandler = async (req, res) => {
+  try {
+    const { resumeText, jobDescription } = req.body;
+    
+    if (!resumeText) {
+      return res.status(400).json({ error: "Resume text is required." });
+    }
+
+    const generateCoverLetter = require("../utils/aiCoverLetter");
+    const coverLetterText = await generateCoverLetter(resumeText, jobDescription);
+    
+    res.json({ coverLetter: coverLetterText });
+  } catch (error) {
+    console.error("Generate Cover Letter error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred while generating the cover letter. Please try again." });
+  }
+};
+
+const mockInterviewHandler = async (req, res) => {
+  try {
+    const { message, history, resumeText, jobDescription } = req.body;
+    
+    if (!message || !resumeText) {
+      return res.status(400).json({ error: "Message and resume text are required." });
+    }
+
+    const chatWithInterviewer = require("../utils/aiInterviewer");
+    const reply = await chatWithInterviewer(message, history, resumeText, jobDescription);
+    
+    res.json({ reply });
+  } catch (error) {
+    console.error("Mock Interview error:", error.message);
+    res.status(500).json({ error: "An internal server error occurred during the interview chat." });
+  }
+};
+
+module.exports = { uploadResume, getHistory, deleteHistory, rewriteBulletPoint, generateCoverLetterHandler, mockInterviewHandler };

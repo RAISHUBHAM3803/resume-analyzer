@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rateLimit = require("express-rate-limit");
-const { uploadResume, getHistory, deleteHistory, rewriteBulletPoint } = require("../controllers/resumeController");
+const { uploadResume, getHistory, deleteHistory, rewriteBulletPoint, generateCoverLetterHandler, mockInterviewHandler } = require("../controllers/resumeController");
 const { protect, requireAuth } = require("../middleware/authMiddleware");
 
 // Rate limit only the upload endpoint (10 uploads per 15 min per IP)
@@ -22,5 +22,11 @@ router.delete("/history", protect, requireAuth, deleteHistory);
 
 // AI Rewrite endpoint
 router.post("/rewrite", protect, rewriteBulletPoint);
+
+// Cover Letter Generator endpoint
+router.post("/cover-letter", protect, generateCoverLetterHandler);
+
+// Mock Interview endpoint
+router.post("/mock-interview", protect, mockInterviewHandler);
 
 module.exports = router;
