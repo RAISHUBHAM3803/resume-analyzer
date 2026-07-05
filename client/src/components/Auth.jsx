@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { login, register, forgotPassword } from "../services/api";
-import { Mail, Lock, User, Sparkles, ArrowRight, AlertCircle, Eye, EyeOff, MailCheck } from "lucide-react";
+import { Mail, Lock, User, ScanSearch, ArrowRight, AlertCircle, Eye, EyeOff, MailCheck } from "lucide-react";
 import "./Auth.css";
 
 function Auth({ onAuthSuccess, goHome }) {
@@ -112,7 +112,7 @@ function Auth({ onAuthSuccess, goHome }) {
           {/* Header */}
           <div className="auth-hdr">
             <div className="auth-brand-icon">
-              <Sparkles size={22} />
+              <ScanSearch size={22} />
             </div>
             <h1 className="auth-title">
               {isForgot ? "Reset Password" : isLogin ? "Welcome back" : "Create account"}

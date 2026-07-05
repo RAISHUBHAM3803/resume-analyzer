@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { resetPassword } from "../services/api";
-import { Lock, Sparkles, ArrowRight, AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react";
+import { Lock, ScanSearch, ArrowRight, AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react";
 import "./Auth.css";
 
 function ResetPassword({ token, goHome, goAuth }) {
@@ -83,7 +83,7 @@ function ResetPassword({ token, goHome, goAuth }) {
 
           <div className="auth-hdr">
             <div className="auth-brand-icon">
-              <Sparkles size={22} />
+              <ScanSearch size={22} />
             </div>
             <h1 className="auth-title">Create new password</h1>
             <p className="auth-subtitle">

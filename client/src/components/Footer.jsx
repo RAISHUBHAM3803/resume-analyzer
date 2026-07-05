@@ -1,4 +1,4 @@
-import { Sparkles, Heart, ExternalLink } from "lucide-react";
+import { ScanSearch, Heart, ExternalLink } from "lucide-react";
 import "./Footer.css";
 
 function Footer() {
@@ -14,7 +14,7 @@ function Footer() {
           {/* Brand */}
           <div className="footer__brand">
             <div className="footer__logo">
-              <div className="footer__logo-icon"><Sparkles size={16} /></div>
+              <div className="footer__logo-icon"><ScanSearch size={16} /></div>
               <span className="footer__logo-text">
                 Resu<span className="gradient-text">Scan</span>
               </span>

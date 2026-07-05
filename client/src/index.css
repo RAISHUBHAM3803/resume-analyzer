@@ -2,44 +2,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Colors */
-  --bg-primary: #06070d;
-  --bg-secondary: #0e0f1a;
-  --bg-card: rgba(18, 19, 32, 0.85);
-  --bg-card-hover: rgba(26, 28, 46, 0.9);
+  /* Colors - Deep Slate & Obsidian */
+  --bg-primary: #020617;     /* Slate 950 */
+  --bg-secondary: #0f172a;   /* Slate 900 */
+  --bg-card: rgba(15, 23, 42, 0.85);
+  --bg-card-hover: rgba(30, 41, 59, 0.9);
   --bg-glass: rgba(255, 255, 255, 0.025);
   --bg-glass-strong: rgba(255, 255, 255, 0.055);
 
-  /* Accents */
-  --accent-primary: #6366f1;
-  --accent-secondary: #8b5cf6;
-  --accent-light: #a5b4fc;
-  --accent-green: #10b981;
-  --accent-blue: #3b82f6;
-  --accent-orange: #f59e0b;
-  --accent-red: #ef4444;
+  /* Accents - Cyan Blue */
+  --accent-primary: #06b6d4;   /* Cyan 500 */
+  --accent-secondary: #0ea5e9; /* Sky 500 */
+  --accent-light: #67e8f9;     /* Cyan 300 */
+  --accent-green: #10b981;     /* Emerald 500 */
+  --accent-blue: #3b82f6;      /* Blue 500 */
+  --accent-orange: #f59e0b;    /* Amber 500 */
+  --accent-red: #ef4444;       /* Red 500 */
 
   /* Gradients */
-  --gradient-brand: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-  --gradient-hero: linear-gradient(135deg, #6366f1, #8b5cf6);
-  --gradient-glow: radial-gradient(ellipse at center, rgba(99,102,241,0.2) 0%, transparent 70%);
+  --gradient-brand: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 50%, #3b82f6 100%);
+  --gradient-hero: linear-gradient(135deg, #06b6d4, #3b82f6);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
 
   /* Text */
-  --text-primary: #f1f1f5;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
+  --text-primary: #f8fafc;     /* Slate 50 */
+  --text-secondary: #94a3b8;   /* Slate 400 */
+  --text-muted: #64748b;       /* Slate 500 */
 
   /* Borders */
   --border-subtle: rgba(255, 255, 255, 0.05);
   --border-medium: rgba(255, 255, 255, 0.09);
-  --border-accent: rgba(99, 102, 241, 0.35);
+  --border-accent: rgba(6, 182, 212, 0.35);
 
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 20px 64px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.18);
-  --shadow-glow-sm: 0 0 20px rgba(99, 102, 241, 0.12);
+  --shadow-glow: 0 0 40px rgba(6, 182, 212, 0.15);
+  --shadow-glow-sm: 0 0 20px rgba(6, 182, 212, 0.1);
 
   /* Typography */
   --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
@@ -96,11 +96,11 @@ body {
 /* ─── Scrollbar ───────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.5); }
+::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.3); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(6, 182, 212, 0.5); }
 
 /* ─── Selection ───────────────────────────────────────────────── */
-::selection { background: rgba(99, 102, 241, 0.3); color: #fff; }
+::selection { background: rgba(6, 182, 212, 0.3); color: #fff; }
 
 /* ─── Gradient text ───────────────────────────────────────────── */
 .gradient-text {
@@ -119,7 +119,7 @@ body {
 @keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fadeInUp  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); } 70% { box-shadow: 0 0 0 10px rgba(99,102,241,0); } }
+@keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); } }
 
 .fade-in    { animation: fadeIn 0.5s ease forwards; }
 .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }

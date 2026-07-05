@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Sparkles, Menu, X, LogIn, LogOut, History, User } from "lucide-react";
+import { ScanSearch, Menu, X, LogIn, LogOut, History, User } from "lucide-react";
 import "./Navbar.css";
 
 function Navbar({ onLogoClick, onGetStarted, onHistoryClick, user, onLogout, onLoginClick }) {
@@ -24,7 +24,7 @@ function Navbar({ onLogoClick, onGetStarted, onHistoryClick, user, onLogout, onL
       <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
         <div className="navbar__inner">
           <button className="navbar__logo" onClick={onLogoClick} aria-label="Home">
-            <div className="navbar__logo-icon"><Sparkles size={18} /></div>
+            <div className="navbar__logo-icon"><ScanSearch size={18} /></div>
             <span className="navbar__logo-text">Resu<span className="gradient-text">Scan</span></span>
             <span className="navbar__badge">AI</span>
           </button>
@@ -79,7 +79,7 @@ function Navbar({ onLogoClick, onGetStarted, onHistoryClick, user, onLogout, onL
         <div className="navbar__mobile-content">
           <div className="navbar__mobile-header">
             <button className="navbar__logo" onClick={() => { onLogoClick(); setMenuOpen(false); }}>
-              <div className="navbar__logo-icon"><Sparkles size={18} /></div>
+              <div className="navbar__logo-icon"><ScanSearch size={18} /></div>
               <span className="navbar__logo-text">Resu<span className="gradient-text">Scan</span></span>
             </button>
             <button className="navbar__mobile-close" onClick={() => setMenuOpen(false)}>

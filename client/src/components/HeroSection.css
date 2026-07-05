@@ -6,18 +6,29 @@
   overflow: hidden;
 }
 
+/* Subtle tech grid background instead of massive glowing orb */
 .hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.3;
+  z-index: -2;
+}
+
+.hero::after {
   content: '';
   position: absolute;
   top: -20%;
   left: 50%;
   transform: translateX(-50%);
   width: 140%;
-  height: 1000px;
-  background: var(--gradient-glow);
+  height: 800px;
+  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
   pointer-events: none;
   z-index: -1;
-  opacity: 0.8;
 }
 
 .hero__container {
@@ -43,10 +54,10 @@
   gap: 8px;
   padding: 6px 16px;
   border-radius: var(--radius-full);
-  background: rgba(99, 102, 241, 0.1);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
   width: fit-content;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.1);
 }
 
 .hero__badge-icon {
@@ -99,13 +110,13 @@
   border: none;
   background: var(--gradient-hero);
   color: white;
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.35);
   transition: transform var(--transition-base), box-shadow var(--transition-base);
   width: fit-content;
 }
 
 .hero__btn:hover {
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.45);
+  box-shadow: 0 12px 32px rgba(6, 182, 212, 0.45);
   transform: translateY(-2px);
 }
 
@@ -170,8 +181,8 @@
 }
 
 .hero__mock--back {
-  background: rgba(99, 102, 241, 0.05);
-  border: 1px solid rgba(99, 102, 241, 0.15);
+  background: rgba(6, 182, 212, 0.05);
+  border: 1px solid rgba(6, 182, 212, 0.15);
   height: 85%;
   top: 15%;
   left: 8%;
@@ -280,9 +291,9 @@
   animation: shimmer 2s infinite;
 }
 
-.mock-fill--p { background: linear-gradient(90deg, #8b5cf6, #d946ef); }
-.mock-fill--g { background: linear-gradient(90deg, #10b981, #34d399); }
-.mock-fill--b { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.mock-fill--p { background: linear-gradient(90deg, #0ea5e9, #3b82f6); }
+.mock-fill--g { background: linear-gradient(90deg, #06b6d4, #10b981); }
+.mock-fill--b { background: linear-gradient(90deg, #3b82f6, #6366f1); }
 
 .mock-badge {
   position: absolute;
@@ -297,7 +308,7 @@
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4);
 }
 
 .mock-badge-val {
@@ -480,8 +491,8 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: rgba(99, 102, 241, 0.1);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
