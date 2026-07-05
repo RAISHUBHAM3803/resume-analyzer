@@ -30,8 +30,12 @@ function Navbar({ onLogoClick, onGetStarted, onHistoryClick, user, onLogout, onL
           </button>
 
           <div className="navbar__links">
-            <a href="#features" className="navbar__link">Features</a>
-            <a href="#how-it-works" className="navbar__link">How it Works</a>
+            {!user && (
+              <>
+                <a href="#features" className="navbar__link">Features</a>
+                <a href="#how-it-works" className="navbar__link">How it Works</a>
+              </>
+            )}
             
             {user ? (
               <div className="navbar__user-menu">
@@ -100,8 +104,12 @@ function Navbar({ onLogoClick, onGetStarted, onHistoryClick, user, onLogout, onL
               </div>
             )}
             
-            <a href="#features" className="navbar__mobile-link" onClick={() => setMenuOpen(false)}>Features</a>
-            <a href="#how-it-works" className="navbar__mobile-link" onClick={() => setMenuOpen(false)}>How it Works</a>
+            {!user && (
+              <>
+                <a href="#features" className="navbar__mobile-link" onClick={() => setMenuOpen(false)}>Features</a>
+                <a href="#how-it-works" className="navbar__mobile-link" onClick={() => setMenuOpen(false)}>How it Works</a>
+              </>
+            )}
             
             {user && (
               <button className="navbar__mobile-link navbar__mobile-link--btn" onClick={() => { onHistoryClick(); setMenuOpen(false); }}>
