@@ -25,7 +25,8 @@ function InterviewChat({ resumeText, jobDescription, onClose }) {
           { role: "model", text: res.data.reply }
         ]);
       } catch (err) {
-        setMessages([{ role: "model", text: "Error connecting to interviewer. Please try again." }]);
+        const errMsg = err.response?.data?.error || "Error connecting to interviewer. Please try again.";
+        setMessages([{ role: "model", text: errMsg }]);
       } finally {
         setLoading(false);
       }
@@ -69,7 +70,8 @@ function InterviewChat({ resumeText, jobDescription, onClose }) {
 
       setMessages(prev => [...prev, { role: "model", text: res.data.reply }]);
     } catch (err) {
-      setMessages(prev => [...prev, { role: "model", text: "Sorry, I encountered an error. Please try answering again." }]);
+      const errMsg = err.response?.data?.error || "Sorry, I encountered an error. Please try answering again.";
+      setMessages(prev => [...prev, { role: "model", text: errMsg }]);
     } finally {
       setLoading(false);
     }

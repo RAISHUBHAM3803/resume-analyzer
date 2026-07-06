@@ -191,7 +191,7 @@ const mockInterviewHandler = async (req, res) => {
     res.json({ reply });
   } catch (error) {
     console.error("Mock Interview error:", error.message);
-    res.status(500).json({ error: "An internal server error occurred during the interview chat." });
+    res.status(500).json({ error: error.message || "An internal server error occurred during the interview chat." });
   }
 };
 

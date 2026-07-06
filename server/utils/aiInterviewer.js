@@ -53,7 +53,12 @@ Instructions:
     return result.text.trim();
   } catch (error) {
     console.error("Gemini AI Interviewer Error:", error.message);
-    throw new Error("Failed to generate response.");
+    if (error.status === 503) {
+      throw new Error("Google AI servers are currently overloaded (High Demand). Please wait a moment and try again.");
+    } else if (error.status === 401 || error.message.includes("key")) {
+      throw new Error("Authentication failed. Please verify your MOCK_INTERVIEW_API_KEY in Render.");
+    }
+    throw new Error(error.message || "Failed to generate response.");
   }
 };
 
