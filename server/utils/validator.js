@@ -1,6 +1,6 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null;
 
 /**
  * Uses Gemini AI to determine if the uploaded PDF is actually a resume.
@@ -14,11 +14,6 @@ const validateResumeText = async (text) => {
   // ── AI-powered classification (primary) ──────────────────────────────────
   if (genAI) {
     try {
-      const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash",
-        generationConfig: { responseMimeType: "application/json" },
-      });
-
       const prompt = `
 You are a document classifier. Your ONLY task is to determine if the following text is from a professional RESUME or CV.
 
@@ -40,8 +35,14 @@ Text:
 ${text.substring(0, 2000)}
       `;
 
-      const result = await model.generateContent(prompt);
-      const parsed = JSON.parse(result.response.text().trim());
+      const result = await genAI.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json"
+        }
+      });
+      const parsed = JSON.parse(result.text.trim());
 
       if (parsed.isResume === false) {
         return {

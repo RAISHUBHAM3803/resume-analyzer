@@ -1,11 +1,11 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 
 // Uses a dedicated key for the Mock Interview feature.
 // Falls back to the shared GEMINI_API_KEY if MOCK_INTERVIEW_API_KEY is not set.
 const getMockInterviewClient = () => {
   const apiKey = process.env.MOCK_INTERVIEW_API_KEY || process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
-  return new GoogleGenerativeAI(apiKey);
+  return new GoogleGenAI({ apiKey });
 };
 
 const chatWithInterviewer = async (message, history, resumeText, jobDescription) => {
@@ -15,7 +15,7 @@ const chatWithInterviewer = async (message, history, resumeText, jobDescription)
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
 
     // The system prompt sets the context for the model.
     // In gemini-2.5, we can use systemInstruction if available, but to be safe, we can prepend it to the first user message if history is empty.
@@ -44,12 +44,13 @@ Instructions:
       ];
     }
 
-    const chat = model.startChat({
+    const chat = genAI.chats.create({
+      model: "gemini-2.5-flash",
       history: chatHistory,
     });
 
-    const result = await chat.sendMessage(message);
-    return result.response.text().trim();
+    const result = await chat.sendMessage({ message });
+    return result.text.trim();
   } catch (error) {
     console.error("Gemini AI Interviewer Error:", error.message);
     throw new Error("Failed to generate response.");

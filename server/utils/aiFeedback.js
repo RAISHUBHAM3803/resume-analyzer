@@ -1,6 +1,6 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null;
 
 const generateFeedback = async (resumeText, analysis) => {
   const fallbackResponse = {
@@ -16,12 +16,7 @@ const generateFeedback = async (resumeText, analysis) => {
   if (!genAI) return fallbackResponse;
 
   try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      generationConfig: { responseMimeType: "application/json" },
-    });
-
-    const prompt = `
+      const prompt = `
 You are a Senior Technical Career Coach and Expert Recruiter. 
 
 Analyze the following Resume content.
@@ -46,8 +41,14 @@ Return ONLY a valid JSON object matching the following structure:
 }
 `;
 
-    const result = await model.generateContent(prompt);
-    const parsed = JSON.parse(result.response.text().trim());
+      const result = await genAI.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json"
+        }
+      });
+      const parsed = JSON.parse(result.text.trim());
     
     return {
       domain: parsed.domain || fallbackResponse.domain,

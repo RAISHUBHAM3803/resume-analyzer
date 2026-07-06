@@ -1,11 +1,11 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 
 // Uses a dedicated key for the Cover Letter feature.
 // Falls back to the shared GEMINI_API_KEY if COVER_LETTER_API_KEY is not set.
 const getCoverLetterClient = () => {
   const apiKey = process.env.COVER_LETTER_API_KEY || process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
-  return new GoogleGenerativeAI(apiKey);
+  return new GoogleGenAI({ apiKey });
 };
 
 const generateCoverLetter = async (resumeText, jobDescription) => {
@@ -15,8 +15,6 @@ const generateCoverLetter = async (resumeText, jobDescription) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-
     const prompt = `
 You are an expert career coach and professional copywriter.
 Generate a highly persuasive, professional cover letter for the user based on their resume and the target job description.
@@ -37,8 +35,11 @@ Instructions:
 5. Return ONLY the plain text of the cover letter. No markdown formatting, no JSON, just the text.
 `;
 
-    const result = await model.generateContent(prompt);
-    return result.response.text().trim();
+    const result = await genAI.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt
+    });
+    return result.text.trim();
   } catch (error) {
     console.error("Gemini AI Cover Letter Error:", error.message);
     throw new Error("Failed to generate cover letter.");
