@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Send, User, Bot, Sparkles } from "lucide-react";
 import { mockInterview } from "../services/api";
+import ReactMarkdown from "react-markdown";
 import "./InterviewChat.css";
 
 function InterviewChat({ resumeText, jobDescription, onClose }) {
@@ -84,7 +85,7 @@ function InterviewChat({ resumeText, jobDescription, onClose }) {
           <div className="modal-title">
             <Sparkles size={20} className="c-accent" />
             <div>
-              <h2>AI Mock Interview</h2>
+              <h2>TechRecruit AI</h2>
               <span className="chat-subtitle">Practice with a technical recruiter</span>
             </div>
           </div>
@@ -100,9 +101,11 @@ function InterviewChat({ resumeText, jobDescription, onClose }) {
                 {msg.role === "user" ? <User size={16} /> : <Bot size={16} />}
               </div>
               <div className={`chat-bubble ${msg.role === "user" ? "bubble-user" : "bubble-bot"}`}>
-                {msg.text.split('\n').map((line, i) => (
-                  <p key={i}>{line}</p>
-                ))}
+                {msg.role === "user" ? (
+                  msg.text.split('\n').map((line, i) => <p key={i}>{line}</p>)
+                ) : (
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                )}
               </div>
             </div>
           ))}
