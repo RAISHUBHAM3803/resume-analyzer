@@ -53,9 +53,11 @@ Instructions:
     return result.text.trim();
   } catch (error) {
     console.error("Gemini AI Interviewer Error:", error.message);
-    if (error.status === 503) {
-      throw new Error("Google AI servers are currently overloaded (High Demand). Please wait a moment and try again.");
-    } else if (error.status === 401 || error.message.includes("key")) {
+    if (error.status === 429 || (error.message && error.message.includes("429"))) {
+      throw new Error("Your Gemini API quota has been exhausted for today. Please generate a new API key from Google AI Studio and update MOCK_INTERVIEW_API_KEY in Render.");
+    } else if (error.status === 503 || (error.message && error.message.includes("503"))) {
+      throw new Error("Google AI servers are currently overloaded. Please wait a moment and try again.");
+    } else if (error.status === 401 || (error.message && error.message.includes("key"))) {
       throw new Error("Authentication failed. Please verify your MOCK_INTERVIEW_API_KEY in Render.");
     }
     throw new Error(error.message || "Failed to generate response.");

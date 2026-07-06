@@ -56,7 +56,11 @@ Return ONLY a valid JSON object matching the following structure:
       questions: parsed.questions || fallbackResponse.questions
     };
   } catch (error) {
-    console.error("Gemini AI Feedback Error:", error.message);
+    if (error.message && (error.message.includes("429") || error.message.includes("RESOURCE_EXHAUSTED"))) {
+      console.error("Gemini AI Feedback Error: Quota exhausted. Generate a new GEMINI_API_KEY.");
+    } else {
+      console.error("Gemini AI Feedback Error:", error.message);
+    }
     return fallbackResponse;
   }
 };
