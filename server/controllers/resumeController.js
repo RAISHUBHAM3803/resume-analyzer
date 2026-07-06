@@ -84,6 +84,7 @@ const uploadResume = (req, res) => {
 
       res.json({
         message: "Resume analyzed successfully",
+        text: text,
         score: result.score,
         skills: result.skills,
         missingSkills: result.missingSkills,
