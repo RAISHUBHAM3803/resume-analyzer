@@ -1,16 +1,11 @@
-const { GoogleGenAI } = require("@google/genai");
-
-// Uses a dedicated key for the Cover Letter feature.
-// Falls back to the shared GEMINI_API_KEY if COVER_LETTER_API_KEY is not set.
-const getCoverLetterClient = () => {
-  const apiKey = process.env.COVER_LETTER_API_KEY || process.env.GEMINI_API_KEY;
-  if (!apiKey) return null;
-  return new GoogleGenAI({ apiKey });
+const getGroqApiKey = () => {
+  return process.env.GROQ_API_KEY || process.env.BULLET_REWRITER_API_KEY;
 };
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const generateCoverLetter = async (resumeText, jobDescription) => {
-  const genAI = getCoverLetterClient();
-  if (!genAI) {
+  const apiKey = getGroqApiKey();
+  if (!apiKey) {
     return "Error: Cover Letter API key is not configured. Please set COVER_LETTER_API_KEY in your environment variables.";
   }
 
@@ -35,15 +30,29 @@ Instructions:
 5. Return ONLY the plain text of the cover letter. No markdown formatting, no JSON, just the text.
 `;
 
-    const result = await genAI.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt
+    const response = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+        max_tokens: 1500
+      })
     });
-    return result.text.trim();
+
+    if (!response.ok) throw new Error(`Groq API error: ${response.status}`);
+
+    const result = await response.json();
+    return result.choices[0].message.content.trim();
   } catch (error) {
-    console.error("Gemini AI Cover Letter Error:", error.message);
+    console.error("AI Cover Letter Error:", error.message);
     throw new Error("Failed to generate cover letter.");
   }
 };
 
 module.exports = generateCoverLetter;
+

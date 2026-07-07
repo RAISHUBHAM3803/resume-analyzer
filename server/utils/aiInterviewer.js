@@ -1,29 +1,19 @@
-const { GoogleGenAI } = require("@google/genai");
-
-// Uses a dedicated key for the Mock Interview feature.
-// Falls back to the shared GEMINI_API_KEY if MOCK_INTERVIEW_API_KEY is not set.
-const getMockInterviewClient = () => {
-  const apiKey = process.env.MOCK_INTERVIEW_API_KEY || process.env.GEMINI_API_KEY;
-  if (!apiKey) return null;
-  return new GoogleGenAI({ apiKey });
+const getGroqApiKey = () => {
+  return process.env.GROQ_API_KEY || process.env.BULLET_REWRITER_API_KEY;
 };
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const chatWithInterviewer = async (message, history, resumeText, jobDescription) => {
-  const genAI = getMockInterviewClient();
-  if (!genAI) {
+  const apiKey = getGroqApiKey();
+  if (!apiKey) {
     throw new Error("Mock Interview API key is not configured. Please set MOCK_INTERVIEW_API_KEY in your environment variables.");
   }
 
   try {
-
-
-    // The system prompt sets the context for the model.
-    // In gemini-2.5, we can use systemInstruction if available, but to be safe, we can prepend it to the first user message if history is empty.
-    
     let chatHistory = history || [];
-    
-    if (chatHistory.length === 0) {
-      const systemContext = `
+    let messages = [];
+
+    const systemContext = `
 You are an expert Technical Recruiter conducting a mock interview.
 The candidate has applied for a role based on this Job Description:
 ${jobDescription || "A technical role matching their skills."}
@@ -38,30 +28,55 @@ Instructions:
 4. Keep your responses concise (1-2 paragraphs max).
 5. Start the interview by introducing yourself briefly and asking the first question.
 `;
-      chatHistory = [
-        { role: "user", parts: [{ text: systemContext }] },
-        { role: "model", parts: [{ text: "Understood. I am ready to begin the interview." }] }
-      ];
+
+    messages.push({ role: "system", content: systemContext });
+
+    // Convert existing history to OpenAI/Groq format
+    if (chatHistory.length > 0) {
+      for (const msg of chatHistory) {
+        messages.push({
+          role: msg.role === "user" ? "user" : "assistant",
+          content: msg.parts && msg.parts[0] ? msg.parts[0].text : (msg.text || "")
+        });
+      }
+    } else {
+      // First turn
+      messages.push({ role: "assistant", content: "Understood. I am ready to begin the interview." });
     }
 
-    const chat = genAI.chats.create({
-      model: "gemini-2.5-flash",
-      history: chatHistory,
+    // Add current user message
+    messages.push({ role: "user", content: message });
+
+    const response = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages: messages,
+        temperature: 0.6,
+        max_tokens: 800
+      })
     });
 
-    const result = await chat.sendMessage({ message });
-    return result.text.trim();
-  } catch (error) {
-    console.error("Gemini AI Interviewer Error:", error.message);
-    if (error.status === 429 || (error.message && error.message.includes("429"))) {
-      throw new Error("Your Gemini API quota has been exhausted for today. Please generate a new API key from Google AI Studio and update MOCK_INTERVIEW_API_KEY in Render.");
-    } else if (error.status === 503 || (error.message && error.message.includes("503"))) {
-      throw new Error("Google AI servers are currently overloaded. Please wait a moment and try again.");
-    } else if (error.status === 401 || (error.message && error.message.includes("key"))) {
-      throw new Error("Authentication failed. Please verify your MOCK_INTERVIEW_API_KEY in Render.");
+    if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error("Your AI quota has been exhausted. Please try again later.");
+      } else if (response.status === 401) {
+        throw new Error("Authentication failed. Please verify your API Key.");
+      }
+      throw new Error(`API error: ${response.status}`);
     }
+
+    const result = await response.json();
+    return result.choices[0].message.content.trim();
+  } catch (error) {
+    console.error("AI Interviewer Error:", error.message);
     throw new Error(error.message || "Failed to generate response.");
   }
 };
 
 module.exports = chatWithInterviewer;
+
