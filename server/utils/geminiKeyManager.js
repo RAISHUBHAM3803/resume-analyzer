@@ -1,4 +1,4 @@
-﻿/**
+/**
  * geminiKeyManager.js
  * ────────────────────────────────────────────────────────────────────────────
  * Manages a rotating pool of Gemini API keys.
@@ -9,6 +9,13 @@
  */
 
 const { GoogleGenAI } = require("@google/genai");
+
+/**
+ * ── Shared Model Constant ────────────────────────────────────────────────────
+ * Change this ONE value to update the Gemini model used across ALL AI features:
+ * Resume Validation, AI Feedback & Questions, Cover Letter Generator, Mock Interview.
+ */
+const GEMINI_MODEL = "gemini-2.5-flash-lite";
 
 // ── Load all Gemini keys from env ────────────────────────────────────────────
 const loadKeys = () => {
@@ -87,4 +94,5 @@ const isAuthError = (err) => {
   );
 };
 
-module.exports = { getGeminiClient, markCurrentKeyExhausted, isQuotaError, isAuthError };
+module.exports = { GEMINI_MODEL, getGeminiClient, markCurrentKeyExhausted, isQuotaError, isAuthError };
+

@@ -1,4 +1,4 @@
-﻿const { getGeminiClient, markCurrentKeyExhausted, isQuotaError } = require("./geminiKeyManager");
+const { getGeminiClient, markCurrentKeyExhausted, isQuotaError, GEMINI_MODEL } = require("./geminiKeyManager");
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const getGroqKey = () => process.env.GROQ_API_KEY || process.env.BULLET_REWRITER_API_KEY;
@@ -36,7 +36,7 @@ const generateFeedback = async (resumeText, analysis) => {
   while (geminiClient) {
     try {
       const result = await geminiClient.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: GEMINI_MODEL,
         contents: prompt,
         config: { responseMimeType: "application/json" }
       });

@@ -1,4 +1,4 @@
-﻿const { getGeminiClient, markCurrentKeyExhausted, isQuotaError } = require("./geminiKeyManager");
+const { getGeminiClient, markCurrentKeyExhausted, isQuotaError, GEMINI_MODEL } = require("./geminiKeyManager");
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const getGroqKey = () => process.env.GROQ_API_KEY || process.env.BULLET_REWRITER_API_KEY;
@@ -35,7 +35,7 @@ const chatWithInterviewer = async (message, history, resumeText, jobDescription)
         ];
       }
 
-      const chat = geminiClient.chats.create({ model: "gemini-2.0-flash", history: chatHistory });
+      const chat = geminiClient.chats.create({ model: GEMINI_MODEL, history: chatHistory });
       const result = await chat.sendMessage({ message });
       console.log("Mock Interview: Gemini 2.0 Flash");
       return result.text.trim();
