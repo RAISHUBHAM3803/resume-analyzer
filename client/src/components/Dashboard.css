@@ -1,4 +1,4 @@
-﻿/* ===== DASHBOARD ===== */
+/* ===== DASHBOARD ===== */
 .dash-section {
   padding: calc(var(--nav-height) + 24px) 24px 80px;
   position: relative;
@@ -52,9 +52,9 @@
   background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
   border-color: transparent;
   color: #fff;
-  box-shadow: 0 0 16px rgba(99,102,241,0.25);
+  box-shadow: 0 0 16px rgba(245, 158, 11,0.25);
 }
-.dash__btn--primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.4); color: #fff; }
+.dash__btn--primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245, 158, 11,0.4); color: #fff; }
 
 .dash__title-row {
   display: flex;
@@ -89,8 +89,8 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--accent-primary);
-  background: rgba(99,102,241,0.1);
-  border: 1px solid rgba(99,102,241,0.2);
+  background: rgba(245, 158, 11,0.1);
+  border: 1px solid rgba(245, 158, 11,0.2);
   padding: 5px 12px;
   border-radius: var(--radius-full);
   white-space: nowrap;
@@ -262,7 +262,7 @@
 }
 .ai-bullet {
   width: 24px; height: 24px;
-  background: rgba(99,102,241,0.1);
+  background: rgba(245, 158, 11,0.1);
   border-radius: var(--radius-sm);
   display: flex; align-items: center; justify-content: center;
   color: var(--accent-primary);
@@ -285,8 +285,8 @@
   font-size: 11px;
   font-weight: 800;
   color: var(--accent-primary);
-  background: rgba(99,102,241,0.1);
-  border: 1px solid rgba(99,102,241,0.2);
+  background: rgba(245, 158, 11,0.1);
+  border: 1px solid rgba(245, 158, 11,0.2);
   padding: 2px 8px;
   border-radius: var(--radius-full);
   white-space: nowrap;
@@ -315,7 +315,7 @@
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .rewriter-textarea::placeholder { color: var(--text-muted); }
-.rewriter-textarea:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+.rewriter-textarea:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(245, 158, 11,0.15); }
 
 .rewriter-btn {
   display: flex;
@@ -349,8 +349,8 @@
 .rewriter-suggestions { display: flex; flex-direction: column; gap: 10px; }
 .rsug-card {
   padding: 14px 16px;
-  background: rgba(99,102,241,0.05);
-  border: 1px solid rgba(99,102,241,0.15);
+  background: rgba(245, 158, 11,0.05);
+  border: 1px solid rgba(245, 158, 11,0.15);
   border-radius: var(--radius-md);
   display: flex;
   align-items: flex-start;

@@ -1,4 +1,4 @@
-﻿/* ===== HERO SECTION ===== */
+/* ===== HERO SECTION ===== */
 .hero {
   min-height: 100vh;
   display: flex;
@@ -25,8 +25,8 @@
   align-items: center;
   gap: 7px;
   padding: 6px 14px;
-  background: rgba(99,102,241,0.1);
-  border: 1px solid rgba(99,102,241,0.25);
+  background: rgba(245, 158, 11,0.1);
+  border: 1px solid rgba(245, 158, 11,0.25);
   border-radius: var(--radius-full);
   margin-bottom: 28px;
 }
@@ -66,10 +66,10 @@
   font-weight: 600;
   cursor: pointer;
   transition: opacity var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
-  box-shadow: 0 0 32px rgba(99,102,241,0.35);
+  box-shadow: 0 0 32px rgba(245, 158, 11,0.35);
   letter-spacing: -0.2px;
 }
-.hero__btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(99,102,241,0.5); }
+.hero__btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245, 158, 11,0.5); }
 .hero__btn:active { transform: translateY(0); }
 
 /* Stats Row */
@@ -98,7 +98,7 @@
   font-weight: 500;
 }
 
-/* Visual Side — Mock UI */
+/* Visual Side � Mock UI */
 .hero__visual {
   display: flex;
   align-items: center;
@@ -192,7 +192,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 24px rgba(99,102,241,0.5);
+  box-shadow: 0 0 24px rgba(245, 158, 11,0.5);
   border: 3px solid var(--bg-secondary);
 }
 .mock-badge-val { font-size: 18px; font-weight: 800; color: #fff; line-height: 1; }
@@ -307,8 +307,8 @@
   font-weight: 700;
   letter-spacing: 1.5px;
   color: var(--accent-primary);
-  background: rgba(99,102,241,0.1);
-  border: 1px solid rgba(99,102,241,0.2);
+  background: rgba(245, 158, 11,0.1);
+  border: 1px solid rgba(245, 158, 11,0.2);
   width: 36px; height: 22px;
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: var(--radius-full);

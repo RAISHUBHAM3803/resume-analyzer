@@ -1,4 +1,4 @@
-﻿/* ===== INTERVIEW CHAT ===== */
+/* ===== INTERVIEW CHAT ===== */
 .chat-overlay {
   position: fixed;
   inset: 0;
@@ -142,7 +142,7 @@
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .chat-input::placeholder { color: var(--text-muted); }
-.chat-input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+.chat-input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(245, 158, 11,0.15); }
 
 .chat-send {
   width: 42px; height: 42px;

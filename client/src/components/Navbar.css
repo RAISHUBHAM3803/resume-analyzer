@@ -50,7 +50,7 @@
   border-radius: var(--radius-sm);
   display: flex; align-items: center; justify-content: center;
   color: #fff;
-  box-shadow: 0 0 16px rgba(99,102,241,0.35);
+  box-shadow: 0 0 16px rgba(245, 158, 11,0.35);
 }
 
 .navbar__logo-text {
@@ -65,8 +65,8 @@
   font-weight: 700;
   letter-spacing: 0.5px;
   color: var(--accent-primary);
-  background: rgba(99,102,241,0.12);
-  border: 1px solid rgba(99,102,241,0.25);
+  background: rgba(245, 158, 11,0.12);
+  border: 1px solid rgba(245, 158, 11,0.25);
   padding: 2px 6px;
   border-radius: var(--radius-full);
 }
@@ -105,11 +105,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: opacity var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
-  box-shadow: 0 0 20px rgba(99,102,241,0.3);
+  box-shadow: 0 0 20px rgba(245, 158, 11,0.3);
   display: flex; align-items: center; gap: 6px;
   letter-spacing: -0.1px;
 }
-.navbar__cta:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(99,102,241,0.45); }
+.navbar__cta:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(245, 158, 11,0.45); }
 .navbar__cta--full { width: 100%; justify-content: center; }
 
 /* User avatar */

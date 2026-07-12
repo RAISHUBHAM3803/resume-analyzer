@@ -1,4 +1,4 @@
-﻿/* ===== HISTORY ===== */
+/* ===== HISTORY ===== */
 .history-section {
   min-height: 100vh;
   padding: calc(var(--nav-height) + 32px) 24px 80px;
@@ -86,7 +86,7 @@
   display: flex; align-items: center; justify-content: center;
   color: #fff;
   margin-bottom: 4px;
-  box-shadow: 0 0 20px rgba(99,102,241,0.25);
+  box-shadow: 0 0 20px rgba(245, 158, 11,0.25);
 }
 
 .history-hdr-title {
@@ -166,8 +166,8 @@
 .hcard-file { display: flex; align-items: center; gap: 12px; }
 .hcard-file-icon {
   width: 40px; height: 40px;
-  background: rgba(99,102,241,0.1);
-  border: 1px solid rgba(99,102,241,0.15);
+  background: rgba(245, 158, 11,0.1);
+  border: 1px solid rgba(245, 158, 11,0.15);
   border-radius: var(--radius-md);
   display: flex; align-items: center; justify-content: center;
   color: var(--accent-primary);
