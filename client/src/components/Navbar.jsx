@@ -36,35 +36,73 @@ function Navbar({ onLogoClick, onGetStarted, onHistoryClick, user, onLogout, onL
 
           <div className="navbar__links">
             {!user && (
-              <>
-                <a href="#features" className="navbar__link">Features</a>
-                <a href="#tools" className="navbar__link">AI Tools</a>
-                <a href="#how-it-works" className="navbar__link">How it Works</a>
-              </>
-            )}
-            
-            {user ? (
-              <div className="navbar__user-menu">
-                <button className="navbar__link navbar__link--btn" onClick={onHistoryClick}>
-                  <History size={16} /> History
-                </button>
-                <div className="navbar__avatar" title={user.name}>
-                  {user.name.charAt(0).toUpperCase()}
+              <div className="navbar__main-nav">
+                <div className="navbar__dropdown-container">
+                  <button className="navbar__link navbar__link--dropdown">
+                    Products <ChevronDown size={14} className="dropdown-icon" />
+                  </button>
+                  <div className="navbar__dropdown-menu">
+                    <div className="navbar__dropdown-grid">
+                      <a href="#tools" className="dropdown-card">
+                        <div className="dropdown-card__icon" style={{color: 'var(--accent-secondary)'}}><Sparkles size={16} /></div>
+                        <div className="dropdown-card__content">
+                          <span className="dropdown-card__title">ATS Scoring</span>
+                          <span className="dropdown-card__desc">Deep resume analysis</span>
+                        </div>
+                      </a>
+                      <a href="#tools" className="dropdown-card">
+                        <div className="dropdown-card__icon" style={{color: 'var(--accent-green)'}}><Sparkles size={16} /></div>
+                        <div className="dropdown-card__content">
+                          <span className="dropdown-card__title">Cover Letters</span>
+                          <span className="dropdown-card__desc">AI tailored letters</span>
+                        </div>
+                      </a>
+                      <a href="#tools" className="dropdown-card">
+                        <div className="dropdown-card__icon" style={{color: 'var(--accent-blue)'}}><Sparkles size={16} /></div>
+                        <div className="dropdown-card__content">
+                          <span className="dropdown-card__title">Mock Interviews</span>
+                          <span className="dropdown-card__desc">Practice with AI bot</span>
+                        </div>
+                      </a>
+                      <a href="#tools" className="dropdown-card">
+                        <div className="dropdown-card__icon" style={{color: 'var(--accent-orange)'}}><Sparkles size={16} /></div>
+                        <div className="dropdown-card__content">
+                          <span className="dropdown-card__title">Bullet Rewriter</span>
+                          <span className="dropdown-card__desc">STAR method optimizer</span>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
                 </div>
-                <button className="navbar__link navbar__link--btn navbar__link--danger" onClick={onLogout} title="Logout">
-                  <LogOut size={16} /> Logout
-                </button>
+                <a href="#how-it-works" className="navbar__link">How it Works</a>
+                <a href="#pricing" className="navbar__link">Pricing</a>
               </div>
-            ) : (
-              <button className="navbar__link navbar__link--btn" onClick={onLoginClick}>
-                <LogIn size={16} /> Sign in
-              </button>
             )}
             
-            <button className="navbar__cta" onClick={onGetStarted}>
-              <Sparkles size={16} />
-              {user ? "Dashboard" : "Get Started"}
-            </button>
+            <div className="navbar__auth-group">
+              {user ? (
+                <div className="navbar__user-menu">
+                  <button className="navbar__link navbar__link--btn" onClick={onHistoryClick}>
+                    <History size={16} /> History
+                  </button>
+                  <div className="navbar__avatar" title={user.name}>
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <button className="navbar__link navbar__link--btn navbar__link--danger" onClick={onLogout} title="Logout">
+                    <LogOut size={16} /> Logout
+                  </button>
+                </div>
+              ) : (
+                <button className="navbar__link navbar__link--btn" onClick={onLoginClick}>
+                  Log in
+                </button>
+              )}
+              
+              <button className="navbar__cta" onClick={onGetStarted}>
+                <Sparkles size={16} />
+                {user ? "Dashboard" : "Get Started"}
+              </button>
+            </div>
           </div>
 
           <button 
