@@ -1,4 +1,4 @@
-﻿/* ===== HERO SECTION ===== */
+/* ===== HERO SECTION ===== */
 .hero {
   position: relative;
   min-height: 100vh;
@@ -182,7 +182,6 @@
 .bento-layout {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, auto);
   gap: 24px;
   margin-top: 48px;
 }
@@ -195,6 +194,8 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 .bento-box:hover {
   border-color: var(--border-accent);
@@ -203,11 +204,6 @@
 }
 
 .bento-large {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-.bento-wide {
   grid-column: span 2;
 }
 
@@ -259,7 +255,7 @@
 .bento-list {
   list-style: none;
   padding: 0;
-  margin-top: auto;
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -284,6 +280,7 @@
   flex-direction: column;
   gap: 16px;
   position: relative;
+  margin-top: auto;
 }
 .demo-before {
   font-size: 14px; color: var(--text-muted); text-decoration: line-through; padding-bottom: 12px; border-bottom: 1px dashed var(--border-medium);
@@ -295,6 +292,13 @@
 
 
 /* ===== HOW IT WORKS ===== */
+.how-it-works .section__hdr {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .steps {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -310,7 +314,8 @@
   padding: 40px 32px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: 16px;
   transition: all var(--transition-base);
 }
@@ -334,10 +339,17 @@
   color: #fff;
   margin-bottom: 16px;
   box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+  z-index: 2;
 }
 
-.step-card__title { font-size: 20px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; }
-.step-card__desc { font-size: 15px; color: var(--text-secondary); line-height: 1.65; }
+.step-card__title { font-size: 20px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; z-index: 2; }
+.step-card__desc { font-size: 15px; color: var(--text-secondary); line-height: 1.65; z-index: 2; }
+
+.section__cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
 
 /* Responsive */
 @media (max-width: 1024px) {

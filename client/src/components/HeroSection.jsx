@@ -1,4 +1,4 @@
-﻿import { Zap, BarChart3, FileText, Target, Brain, Shield, ArrowRight, MessageSquare, Wand2, CheckCircle2, ChevronRight, Play } from "lucide-react";
+import { Zap, BarChart3, FileText, Target, Brain, Shield, ArrowRight, MessageSquare, Wand2, CheckCircle2, ChevronRight, Play } from "lucide-react";
 import { motion } from "framer-motion";
 import "./HeroSection.css";
 
@@ -163,7 +163,7 @@ function HeroSection({ onGetStarted }) {
               </div>
             </div>
 
-            <div className="bento-box bento-wide fade-in-up" style={{ animationDelay: '0.4s' }}>
+            <div className="bento-box bento-large fade-in-up" style={{ animationDelay: '0.4s' }}>
               <div className="bento-content bento-horizontal">
                 <div>
                   <div className="bento-icon" style={{ color: 'var(--accent-orange)' }}>
