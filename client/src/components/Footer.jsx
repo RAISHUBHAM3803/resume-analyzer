@@ -1,71 +1,70 @@
-import { ScanSearch, Heart, ExternalLink } from "lucide-react";
+import { ScanSearch, Heart, ExternalLink, Mail, MessageCircle, Globe } from "lucide-react";
 import "./Footer.css";
 
 function Footer() {
-  const year = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer">
       <div className="footer__container">
-
-        {/* ── Top divider line ── */}
         <div className="footer__top">
-
-          {/* Brand */}
           <div className="footer__brand">
             <div className="footer__logo">
-              <div className="footer__logo-icon"><ScanSearch size={16} /></div>
-              <span className="footer__logo-text">
-                Resu<span className="gradient-text">Scan</span>
-              </span>
+              <div className="footer__logo-icon"><ScanSearch size={18} /></div>
+              <span className="footer__logo-text">ResuScan</span>
               <span className="footer__badge">AI</span>
             </div>
             <p className="footer__tagline">
-              AI-powered resume analysis. Get your ATS score, skill gaps, and actionable improvements in seconds.
+              The ultimate AI career suite. Analyze your resume, generate perfect cover letters, and master your next interview with our TechRecruit bot.
             </p>
+            <div className="footer__socials">
+              <a href="#" className="footer__social-link" aria-label="Website"><Globe size={18} /></a>
+              <a href="#" className="footer__social-link" aria-label="Community"><MessageCircle size={18} /></a>
+              <a href="#" className="footer__social-link" aria-label="Email"><Mail size={18} /></a>
+            </div>
           </div>
 
-          {/* Navigation links — only real pages */}
-          <nav className="footer__nav" aria-label="Footer navigation">
+          <div className="footer__nav">
             <div className="footer__nav-col">
-              <h4 className="footer__nav-title">Navigate</h4>
+              <h4 className="footer__nav-title">AI Tools</h4>
               <ul className="footer__nav-list">
-                <li><a href="#features" className="footer__nav-link">Features</a></li>
-                <li><a href="#how-it-works" className="footer__nav-link">How it Works</a></li>
+                <li><a href="#" className="footer__nav-link">Resume Scoring</a></li>
+                <li><a href="#" className="footer__nav-link">Cover Letter Generator</a></li>
+                <li><a href="#" className="footer__nav-link">Mock Interviews</a></li>
+                <li><a href="#" className="footer__nav-link">STAR Bullet Rewriter</a></li>
               </ul>
             </div>
-
+            
             <div className="footer__nav-col">
-              <h4 className="footer__nav-title">Project</h4>
+              <h4 className="footer__nav-title">Resources</h4>
               <ul className="footer__nav-list">
-                <li>
-                  <a
-                    href="https://github.com/RAISHUBHAM3803/resume-analyzer"
-                    className="footer__nav-link footer__nav-link--ext"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    GitHub <ExternalLink size={12} />
-                  </a>
-                </li>
+                <li><a href="#" className="footer__nav-link">ATS Resume Guide</a></li>
+                <li><a href="#" className="footer__nav-link">Interview Prep Tips</a></li>
+                <li><a href="#" className="footer__nav-link">Blog</a></li>
+                <li><a href="#" className="footer__nav-link">Help Center</a></li>
               </ul>
             </div>
-          </nav>
-
+            
+            <div className="footer__nav-col">
+              <h4 className="footer__nav-title">Company</h4>
+              <ul className="footer__nav-list">
+                <li><a href="#" className="footer__nav-link">About Us</a></li>
+                <li><a href="#" className="footer__nav-link">Privacy Policy</a></li>
+                <li><a href="#" className="footer__nav-link">Terms of Service</a></li>
+                <li><a href="#" className="footer__nav-link">Contact <ExternalLink size={12} /></a></li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        {/* ── Bottom bar ── */}
         <div className="footer__bottom">
-          <p className="footer__copyright">
-            © {year} ResuScan AI. Built with{" "}
-            <Heart size={13} className="footer__heart" />{" "}
-            by Shubham Rai.
-          </p>
-          <p className="footer__stack">
-            React · Node.js · MongoDB · Groq AI
-          </p>
+          <div className="footer__copyright">
+            &copy; {currentYear} ResuScan AI. All rights reserved.
+          </div>
+          <div className="footer__made-with">
+            Built with <Heart size={12} className="footer__heart" /> for job seekers everywhere.
+          </div>
         </div>
-
       </div>
     </footer>
   );
