@@ -68,7 +68,7 @@ const uploadResume = (req, res) => {
       const aiResponse = await generateFeedback(text, result);
 
       const resumeData = {
-        fileName: req.file.filename,
+        fileName: req.file.originalname || req.file.filename,
         text,
         score: result.score,
         skills: result.skills,

@@ -11,9 +11,11 @@ API.interceptors.response.use(
   (response) => response,
   (error) => {
     const url = error.config?.url ?? "";
-    // Skip /auth/me so a guest page load doesn't trigger an infinite reload
-    if (error.response?.status === 401 && !url.includes("/auth/login") && !url.includes("/auth/me")) {
-      // Cookie expired or invalid — reload to let App.jsx re-initialize as guest
+    // Only auto-reload for auth endpoints (not for data endpoints like /resume/history)
+    // This prevents the history/dashboard pages from going blank on 401
+    const isAuthEndpoint = url.includes("/auth/") && !url.includes("/auth/me");
+    const isDataEndpoint = url.includes("/resume/");
+    if (error.response?.status === 401 && isAuthEndpoint && !isDataEndpoint) {
       window.location.reload();
     }
     return Promise.reject(error);

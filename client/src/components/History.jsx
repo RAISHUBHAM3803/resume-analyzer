@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Clock, FileText, Target, Trophy, AlertCircle, Trash2, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getHistory, deleteHistory } from "../services/api";
@@ -16,17 +16,24 @@ function History({ onBack }) {
     const fetchHistory = async () => {
       try {
         const res = await getHistory();
-        if (active) setHistory(res.data);
-      } catch {
-        if (active) setError("Failed to fetch history.");
+        if (active) {
+          setHistory(Array.isArray(res.data) ? res.data : []);
+        }
+      } catch (err) {
+        if (active) {
+          const status = err?.response?.status;
+          if (status === 401) {
+            setError("Session expired. Please log in again.");
+          } else {
+            setError(err?.response?.data?.error || "Failed to fetch history. Please try again.");
+          }
+        }
       } finally {
         if (active) setLoading(false);
       }
     };
     fetchHistory();
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, [refreshCount]);
 
   const handleDelete = async (timeframe) => {
