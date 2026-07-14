@@ -130,16 +130,23 @@ function Dashboard({ data, onReset }) {
     navigator.clipboard.writeText(text);
   };
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     const element = document.getElementById("report-content");
+    element.classList.add("pdf-export-mode");
+    
     const opt = {
-      margin:       0.5,
+      margin:       [0.5, 0.5, 0.5, 0.5],
       filename:     'Resume_Analysis_Report.pdf',
       image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0c0a09' },
+      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
       jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
-    html2pdf().set(opt).from(element).save();
+    
+    try {
+      await html2pdf().set(opt).from(element).save();
+    } finally {
+      element.classList.remove("pdf-export-mode");
+    }
   };
 
   // Parse feedback — handles both "\n"-separated and inline "1. ... 2. ..." numbered formats

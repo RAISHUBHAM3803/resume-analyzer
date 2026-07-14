@@ -409,3 +409,69 @@
   .mini-scores-grid { grid-template-columns: 1fr; }
   .bcard { padding: 24px; }
 }
+
+/* ===== PDF EXPORT MODE ===== */
+.pdf-export-mode {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.pdf-export-mode .dash__actions,
+.pdf-export-mode .bcard--rewriter,
+.pdf-export-mode button,
+.pdf-export-mode .dash__title-row {
+  display: none !important;
+}
+.pdf-export-mode .bento-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+}
+.pdf-export-mode .bcard {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+  page-break-inside: avoid;
+  color: #334155 !important;
+}
+.pdf-export-mode .bcard__header {
+  border-bottom-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+.pdf-export-mode .score-ring__val,
+.pdf-export-mode .stat-val,
+.pdf-export-mode .q-text,
+.pdf-export-mode .ai-item span {
+  color: #0f172a !important;
+}
+.pdf-export-mode .stat-lbl {
+  color: #64748b !important;
+}
+.pdf-export-mode .stag {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+.pdf-export-mode .stag--ok {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #065f46 !important;
+}
+.pdf-export-mode .stag--miss {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #991b1b !important;
+}
+.pdf-export-mode .skills-hdr {
+  color: #1e293b !important;
+}
+.pdf-export-mode .ai-item {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+.pdf-export-mode .q-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
