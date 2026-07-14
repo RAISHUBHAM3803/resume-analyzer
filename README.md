@@ -1,46 +1,103 @@
-# 📄 AI-Powered Resume Analyzer
+<div align="center">
+  <img src="client/public/icons.svg" alt="ResuScan AI Logo" width="80" height="80">
+  <h1 align="center">ResuScan AI</h1>
+  <p align="center">
+    <strong>The Ultimate Career AI Suite for Job Seekers</strong>
+    <br />
+    A production-ready Full Stack application that leverages AI to optimize resumes, generate cover letters, and simulate mock interviews.
+  </p>
+</div>
 
-An intelligent, full-stack application designed to help job seekers optimize their resumes for Applicant Tracking Systems (ATS). Users can upload their PDF resumes and receive a compatibility score against specific job descriptions, along with AI-driven feedback and interview preparation questions.
+---
 
-## 🚀 Key Features
+## 🌟 Features
 
-- **Automated PDF Parsing:** Seamlessly extracts text from PDF resumes using `pdf-parse`.
-- **ATS Scoring Algorithm:** Calculates a weighted compatibility score based on skills, experience, and keywords.
-- **AI Feedback Engine:** Integrates with Google Gemini API to provide professional resume improvement tips and mock interview questions.
-- **Interactive Dashboard:** A responsive React-based UI for visualizing analysis results.
-- **Data Persistence:** Uses MongoDB to securely store analysis history.
+- **📊 ATS Resume Intelligence**: Upload your PDF resume and paste a job description. The AI extracts text, maps skills, and calculates a precise ATS match score.
+- **💡 Actionable Feedback**: Get targeted, line-by-line recommendations on how to improve your resume structure and impact.
+- **📝 AI Cover Letter Generator**: Instantly draft personalized, highly relevant cover letters tailored specifically to the target job description.
+- **🤖 AI Mock Interviewer**: Practice your interview skills with an interactive AI bot that asks technical and behavioral questions based on your resume and the role you're applying for.
+- **✨ STAR Bullet Rewriter**: Transform weak resume bullet points into strong, quantifiable achievements using the STAR (Situation, Task, Action, Result) method.
+- **📈 History Tracking**: Keep track of all your past resume analyses and see your improvement over time with secure user authentication.
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-- **Frontend:** React.js, Vite, Axios, Lucide-React
-- **Backend:** Node.js, Express.js, Multer
-- **Database:** MongoDB (Mongoose)
-- **AI:** Google Gemini API
+**Frontend:**
+- React 18 (Vite)
+- Framer Motion (Animations)
+- Lucide React (Icons)
+- Vanilla CSS / CSS Grid (Bento UI Architecture)
+- html2pdf.js (PDF Report Generation)
 
-## ⚙️ Local Setup
+**Backend:**
+- Node.js & Express.js
+- MongoDB Atlas (Mongoose)
+- Google Gemini AI API (LLM Integration)
+- JWT (JSON Web Tokens) & HTTPOnly Cookies
+- Helmet.js & Express Rate Limit (Security)
+- pdf-parse (Document Parsing)
+- Multer (File Uploads)
 
-### 1. Prerequisites
-- Node.js (v16+)
-- MongoDB Atlas account or local MongoDB instance
+## 🚀 Getting Started
 
-### 2. Backend Configuration
-1. Navigate to `/server` and run `npm install`.
-2. Create a `.env` file with:
-   ```env
-   MONGO_URI=your_mongodb_connection_string
-   GEMINI_API_KEY=your_gemini_api_key
-   PORT=3000
+### Prerequisites
+- Node.js (v18 or higher)
+- MongoDB (Local or Atlas)
+- Google Gemini API Key
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/RAISHUBHAM3803/resume-analyzer.git
+   cd resume-analyzer
    ```
-3. Run `npm start`.
 
-### 3. Frontend Configuration
-1. Navigate to `/client` and run `npm install`.
-2. Run `npm run dev`.
-3. Open `http://localhost:5173`.
+2. **Setup the Backend**
+   ```bash
+   cd server
+   npm install
+   ```
+   Create a `.env` file in the `server` directory with the following:
+   ```env
+   PORT=3000
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_super_secret_jwt_key
+   GEMINI_API_KEY=your_google_gemini_api_key
+   CLIENT_URL=http://localhost:5173
+   ```
 
-## 🔮 Roadmap & Project Status
+3. **Setup the Frontend**
+   ```bash
+   cd ../client
+   npm install
+   ```
 
-All core features are now **fully implemented and verified**:
-- [x] **Secure User Authentication (JWT):** Safe signup, login, and secure route protection.
-- [x] **User History Dashboard:** Secure historical uploads dashboard with selective deletion controls.
-- [x] **Resume Gatekeeper Check:** Custom AI-powered document validator with strict heuristic fallback.
+4. **Run the Application**
+   Open two terminal windows:
+   
+   *Terminal 1 (Backend):*
+   ```bash
+   cd server
+   npm run dev
+   ```
+   
+   *Terminal 2 (Frontend):*
+   ```bash
+   cd client
+   npm run dev
+   ```
+
+## 📐 Architecture & Security
+
+- **Authentication**: Utilizes secure HTTPOnly cookies for JWT storage, protecting against XSS attacks.
+- **Rate Limiting**: API endpoints are protected against brute force and DDoS attacks using `express-rate-limit`.
+- **Clean UI/UX**: Implements a modern "Bento Box" grid system with smooth transitions, responsive design, and intelligent context-aware navigation.
+- **Optimized PDF Export**: The dashboard features a custom print stylesheet that automatically strips UI clutter and applies a clean light theme for professional PDF report generation.
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/RAISHUBHAM3803/resume-analyzer/issues).
+
+## 📄 License
+
+This project is licensed under the MIT License.
