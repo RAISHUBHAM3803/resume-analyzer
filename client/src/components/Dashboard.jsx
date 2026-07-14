@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft, Trophy, Target, Brain, Sparkles, CheckCircle2, XCircle,
   TrendingUp, FileText, Zap, Award, BarChart3, Download, MessageSquare, Info, Wand2, Copy, AlertCircle,
   Briefcase
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { rewriteBullet, generateCoverLetter } from "../services/api";
 import CoverLetterModal from "./CoverLetterModal";
 import InterviewChat from "./InterviewChat";
@@ -135,7 +136,7 @@ function Dashboard({ data, onReset }) {
       margin:       0.5,
       filename:     'Resume_Analysis_Report.pdf',
       image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#020617' },
+      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0c0a09' },
       jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
     html2pdf().set(opt).from(element).save();
@@ -143,12 +144,32 @@ function Dashboard({ data, onReset }) {
 
   const feedbackLines = (feedback || "").split("\n").filter(Boolean);
 
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const cardVariant = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+  };
+
   return (
     <section className="dash-section">
-      <div className="dash fade-in-up" id="report-content">
+      <div className="dash" id="report-content">
         
         {/* Header */}
-        <div className="dash__hdr">
+        <motion.div 
+          className="dash__hdr"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        >
           <div className="dash__actions">
             <button className="dash__btn" onClick={onReset}>
               <ArrowLeft size={16} /> New Analysis
@@ -173,25 +194,35 @@ function Dashboard({ data, onReset }) {
               <Sparkles size={14} /> AI Report
             </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Nudge banner */}
         {match.generalAnalysis && (
-          <div className="dash__nudge fade-in">
+          <motion.div 
+            className="dash__nudge"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
             <Info size={18} className="dash__nudge-icon" />
             <div className="dash__nudge-content">
               These scores reflect your <strong>general resume quality</strong>, not a specific job match.
               <button className="dash__nudge-btn" onClick={onReset}>Add a job description</button> 
               to get a targeted ATS match score.
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Bento Grid Layout */}
-        <div className="bento-grid">
+        <motion.div 
+          className="bento-grid"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="show"
+        >
           
           {/* 1. Main Score Card */}
-          <div className="bcard bcard--main-score">
+          <motion.div className="bcard bcard--main-score" variants={cardVariant}>
             <div className="bcard__header">
               <Trophy size={18} /> <span>Overall ATS Match</span>
             </div>
@@ -210,10 +241,10 @@ function Dashboard({ data, onReset }) {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* 2. Mini Scores Grid */}
-          <div className="bcard bcard--mini-scores">
+          <motion.div className="bcard bcard--mini-scores" variants={cardVariant}>
             <div className="bcard__header">
               <BarChart3 size={18} /> <span>Score Breakdown</span>
             </div>
@@ -223,10 +254,10 @@ function Dashboard({ data, onReset }) {
               <MiniScore icon={<Award size={18}/>} label="Education" value={match.educationScore} color="var(--accent-blue)" />
               <MiniScore icon={<Zap size={18}/>} label="Keywords" value={match.keywordScore} color="var(--accent-orange)" />
             </div>
-          </div>
+          </motion.div>
 
           {/* 3. Skills Mapping */}
-          <div className="bcard bcard--skills">
+          <motion.div className="bcard bcard--skills" variants={cardVariant}>
             <div className="bcard__header">
               <Target size={18} /> <span>Skills Mapping</span>
             </div>
@@ -257,16 +288,16 @@ function Dashboard({ data, onReset }) {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* 4. AI Recommendations & Interview (Left Column Bottom) */}
-          <div className="bcard bcard--feedback">
+          {/* 4. AI Recommendations & Interview */}
+          <motion.div className="bcard bcard--feedback" variants={cardVariant}>
             <div className="bcard__header">
               <Brain size={18} /> <span>Actionable Feedback</span>
             </div>
             <ul className="ai-list">
               {feedbackLines.map((line, i) => (
-                <li key={i} className="ai-item fade-in-up" style={{ animationDelay: `${0.1 * i}s` }}>
+                <li key={i} className="ai-item">
                   <div className="ai-bullet"><Sparkles size={14}/></div>
                   <span>{line.replace(/^[•-]\s*/, "")}</span>
                 </li>
@@ -280,14 +311,14 @@ function Dashboard({ data, onReset }) {
                 </div>
                 <div className="q-list">
                   {questions.map((q, i) => (
-                    <div key={i} className="q-card fade-in-up" style={{ animationDelay: `${0.1 * i}s` }}>
+                    <div key={i} className="q-card">
                       <div className="q-num">Q{i + 1}</div>
                       <div className="q-text">{q}</div>
                     </div>
                   ))}
                 </div>
                 <button 
-                  className="dash__btn dash__btn--primary fade-in" 
+                  className="dash__btn dash__btn--primary" 
                   style={{ marginTop: '16px', width: '100%', justifyContent: 'center' }}
                   onClick={() => setShowInterviewModal(true)}
                 >
@@ -295,10 +326,10 @@ function Dashboard({ data, onReset }) {
                 </button>
               </>
             )}
-          </div>
+          </motion.div>
 
-          {/* 5. AI Bullet Rewriter (Right Column Bottom) */}
-          <div className="bcard bcard--rewriter">
+          {/* 5. AI Bullet Rewriter */}
+          <motion.div className="bcard bcard--rewriter" variants={cardVariant}>
             <div className="bcard__header">
               <Wand2 size={18} /> <span>AI Bullet Rewriter</span>
             </div>
@@ -331,7 +362,7 @@ function Dashboard({ data, onReset }) {
               )}
 
               {rewriteSuggestions && (
-                <div className="rewriter-results fade-in">
+                <div className="rewriter-results">
                   <p className="rewriter-results-title">AI Suggestions:</p>
                   <div className="rewriter-suggestions">
                     {rewriteSuggestions.map((s, i) => (
@@ -346,9 +377,9 @@ function Dashboard({ data, onReset }) {
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
       </div>
       
       {showCoverLetterModal && (

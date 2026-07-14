@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
+﻿import { useState, useRef } from "react";
 import { Upload, FileText, X, ArrowLeft, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { uploadResume } from "../services/api";
 import "./UploadForm.css";
 
@@ -96,7 +97,12 @@ function UploadForm({ onResult, onBack }) {
           <span>Back to Dashboard</span>
         </button>
 
-        <div className="upload-card fade-in-up">
+        <motion.div 
+          className="upload-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        >
           <div className="upload-card__hdr">
             <div className="upload-card__icon"><Sparkles size={24} /></div>
             <h1 className="upload-card__title">Analyze Your Resume</h1>
@@ -104,39 +110,56 @@ function UploadForm({ onResult, onBack }) {
           </div>
 
           <form onSubmit={handleSubmit} className="upload-form">
+            
             {/* Step 1 */}
             <div className="upload-step">
               <div className="upload-step__hdr">
                 <span className="upload-step__num">1</span>
                 <span className="upload-step__title">Upload Resume</span>
               </div>
+              
               <div
                 className={`dropzone ${dragActive ? "dropzone--active" : ""} ${file ? "dropzone--filled" : ""}`}
                 onDragEnter={onDrag} onDragOver={onDrag} onDragLeave={onDrag} onDrop={onDrop}
                 onClick={() => !file && inputRef.current?.click()}
               >
                 <input ref={inputRef} type="file" accept=".pdf" onChange={onFileChange} className="dropzone__input" />
-                {file ? (
-                  <div className="dropzone__file fade-in">
-                    <div className="file-info">
-                      <div className="file-icon"><FileText size={24} /></div>
-                      <div className="file-details">
-                        <span className="file-name" title={file.name}>{file.name}</span>
-                        <span className="file-size">{fmtSize(file.size)}</span>
+                
+                <AnimatePresence mode="wait">
+                  {file ? (
+                    <motion.div 
+                      key="file"
+                      className="dropzone__file"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                    >
+                      <div className="file-info">
+                        <div className="file-icon"><FileText size={24} /></div>
+                        <div className="file-details">
+                          <span className="file-name" title={file.name}>{file.name}</span>
+                          <span className="file-size">{fmtSize(file.size)}</span>
+                        </div>
+                        <button type="button" className="file-remove" onClick={(e) => { e.stopPropagation(); removeFile(); }} title="Remove file">
+                          <X size={16} />
+                        </button>
                       </div>
-                      <button type="button" className="file-remove" onClick={(e) => { e.stopPropagation(); removeFile(); }} title="Remove file">
-                        <X size={16} />
-                      </button>
-                    </div>
-                    <div className="file-ready"><CheckCircle2 size={14} /> Ready for analysis</div>
-                  </div>
-                ) : (
-                  <div className="dropzone__placeholder">
-                    <div className="dropzone__circle"><Upload size={28} /></div>
-                    <p className="dropzone__text"><span className="dropzone__hl">Click to upload</span> or drag and drop</p>
-                    <p className="dropzone__hint">PDF files only (Max 10MB)</p>
-                  </div>
-                )}
+                      <div className="file-ready"><CheckCircle2 size={14} /> Ready for analysis</div>
+                    </motion.div>
+                  ) : (
+                    <motion.div 
+                      key="placeholder"
+                      className="dropzone__placeholder"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <div className="dropzone__circle"><Upload size={28} /></div>
+                      <p className="dropzone__text"><span className="dropzone__hl">Click to upload</span> or drag and drop</p>
+                      <p className="dropzone__hint">PDF files only (Max 10MB)</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
@@ -158,12 +181,19 @@ function UploadForm({ onResult, onBack }) {
               </div>
             </div>
 
-            {error && (
-              <div className="upload-alert fade-in">
-                <AlertCircle size={16} /> 
-                <span>{error}</span>
-              </div>
-            )}
+            <AnimatePresence>
+              {error && (
+                <motion.div 
+                  className="upload-alert"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                >
+                  <AlertCircle size={16} /> 
+                  <span>{error}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <div className="upload-actions">
               <button type="submit" className="upload-submit" disabled={!file || loading}>
@@ -179,14 +209,21 @@ function UploadForm({ onResult, onBack }) {
                 )}
               </button>
               
-              {loading && (
-                <div className="upload-progress fade-in">
-                  <div className="upload-progress-bar" style={{width: `${progress}%`}}></div>
-                </div>
-              )}
+              <AnimatePresence>
+                {loading && (
+                  <motion.div 
+                    className="upload-progress"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 6 }}
+                    exit={{ opacity: 0, height: 0 }}
+                  >
+                    <div className="upload-progress-bar" style={{width: `${progress}%`}}></div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </form>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

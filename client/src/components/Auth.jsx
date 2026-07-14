@@ -1,6 +1,7 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { login, register, forgotPassword } from "../services/api";
-import { Mail, Lock, User, ScanSearch, ArrowRight, AlertCircle, Eye, EyeOff, MailCheck } from "lucide-react";
+import { Mail, Lock, User, ScanSearch, ArrowRight, AlertCircle, Eye, EyeOff, MailCheck, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import "./Auth.css";
 
 function Auth({ onAuthSuccess, goHome }) {
@@ -68,14 +69,29 @@ function Auth({ onAuthSuccess, goHome }) {
     }
   };
 
+  // Variants for animations
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 300, damping: 25 } },
+    exit: { opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.2 } }
+  };
+
   // ── Email sent success screen ──────────────────────────────────────
   if (isForgot && message) {
     return (
       <section className="auth-section">
         <div className="auth-container">
-          <div className="auth-card auth-card--center">
-            <div className="auth-success-icon">
-              <MailCheck size={32} />
+          <motion.div 
+            className="auth-card auth-card--center"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <div className="auth-success-icon-wrap">
+              <div className="auth-success-icon">
+                <MailCheck size={32} />
+              </div>
+              <div className="auth-success-glow"></div>
             </div>
             <h2 className="auth-success-title">Check your inbox</h2>
             <p className="auth-success-body">
@@ -88,10 +104,10 @@ function Auth({ onAuthSuccess, goHome }) {
                 try again
               </button>.
             </p>
-            <button className="auth-btn" onClick={() => switchView("login")}>
+            <button className="auth-btn auth-btn--outline" onClick={() => switchView("login")}>
               Back to Sign in <ArrowRight size={16} />
             </button>
-          </div>
+          </motion.div>
         </div>
       </section>
     );
@@ -107,154 +123,177 @@ function Auth({ onAuthSuccess, goHome }) {
           Back to home
         </button>
 
-        <div className="auth-card">
-
-          {/* Header */}
-          <div className="auth-hdr">
-            <div className="auth-brand-icon">
-              <ScanSearch size={22} />
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={viewMode}
+            className="auth-card"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            {/* Header */}
+            <div className="auth-hdr">
+              <div className="auth-brand-icon">
+                <Sparkles size={22} className="auth-brand-sparkle" />
+              </div>
+              <h1 className="auth-title">
+                {isForgot ? "Reset Password" : isLogin ? "Welcome back" : "Create account"}
+              </h1>
+              <p className="auth-subtitle">
+                {isForgot
+                  ? "Enter your email and we'll send you a reset link."
+                  : isLogin
+                  ? "Sign in to access your AI career suite."
+                  : "Join thousands of job seekers optimizing their resumes."}
+              </p>
             </div>
-            <h1 className="auth-title">
-              {isForgot ? "Reset Password" : isLogin ? "Welcome back" : "Create account"}
-            </h1>
-            <p className="auth-subtitle">
-              {isForgot
-                ? "Enter your email and we'll send you a reset link."
-                : isLogin
-                ? "Sign in to access your resume insights."
-                : "Join thousands of job seekers optimizing their resumes."}
-            </p>
-          </div>
 
-          {/* Error banner */}
-          {error && (
-            <div className="auth-alert auth-alert--error" role="alert">
-              <AlertCircle size={15} />
-              <span>{error}</span>
-            </div>
-          )}
+            {/* Error banner */}
+            <AnimatePresence>
+              {error && (
+                <motion.div 
+                  className="auth-alert auth-alert--error" role="alert"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                >
+                  <AlertCircle size={15} />
+                  <span>{error}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Form */}
-          <form className="auth-form" onSubmit={handleSubmit} noValidate>
+            {/* Form */}
+            <form className="auth-form" onSubmit={handleSubmit} noValidate>
+              
+              <AnimatePresence>
+                {/* Full name (register only) */}
+                {isRegister && (
+                  <motion.div 
+                    className="auth-field"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                  >
+                    <label className="auth-label" htmlFor="auth-name">Full Name</label>
+                    <div className="auth-input-wrap">
+                      <User className="auth-input-icon" size={17} />
+                      <input
+                        id="auth-name"
+                        type="text"
+                        name="name"
+                        placeholder="John Doe"
+                        className="auth-input"
+                        required
+                        autoComplete="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-            {/* Full name (register only) */}
-            {isRegister && (
+              {/* Email */}
               <div className="auth-field">
-                <label className="auth-label" htmlFor="auth-name">Full Name</label>
+                <label className="auth-label" htmlFor="auth-email">Email address</label>
                 <div className="auth-input-wrap">
-                  <User className="auth-input-icon" size={17} />
+                  <Mail className="auth-input-icon" size={17} />
                   <input
-                    id="auth-name"
-                    type="text"
-                    name="name"
-                    placeholder="John Doe"
+                    id="auth-email"
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
                     className="auth-input"
                     required
-                    autoComplete="name"
-                    value={formData.name}
+                    autoComplete="email"
+                    value={formData.email}
                     onChange={handleChange}
                   />
                 </div>
               </div>
-            )}
 
-            {/* Email */}
-            <div className="auth-field">
-              <label className="auth-label" htmlFor="auth-email">Email address</label>
-              <div className="auth-input-wrap">
-                <Mail className="auth-input-icon" size={17} />
-                <input
-                  id="auth-email"
-                  type="email"
-                  name="email"
-                  placeholder="you@example.com"
-                  className="auth-input"
-                  required
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            {/* Password (login + register only) */}
-            {!isForgot && (
-              <div className="auth-field">
-                <div className="auth-label-row">
-                  <label className="auth-label" htmlFor="auth-password">Password</label>
-                  {isLogin && (
+              {/* Password (login + register only) */}
+              {!isForgot && (
+                <div className="auth-field">
+                  <div className="auth-label-row">
+                    <label className="auth-label" htmlFor="auth-password">Password</label>
+                    {isLogin && (
+                      <button
+                        type="button"
+                        className="auth-link auth-link--sm"
+                        onClick={() => switchView("forgot")}
+                      >
+                        Forgot password?
+                      </button>
+                    )}
+                  </div>
+                  <div className="auth-input-wrap">
+                    <Lock className="auth-input-icon" size={17} />
+                    <input
+                      id="auth-password"
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="••••••••"
+                      className="auth-input auth-input--password"
+                      required
+                      autoComplete={isLogin ? "current-password" : "new-password"}
+                      minLength={isLogin ? 6 : 8}
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
                     <button
                       type="button"
-                      className="auth-link"
-                      onClick={() => switchView("forgot")}
+                      className="auth-eye-btn"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                      Forgot password?
+                      {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                     </button>
+                  </div>
+                  {isRegister && (
+                    <p className="auth-hint">Min 8 characters · at least 1 letter &amp; 1 number</p>
                   )}
                 </div>
-                <div className="auth-input-wrap">
-                  <Lock className="auth-input-icon" size={17} />
-                  <input
-                    id="auth-password"
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="••••••••"
-                    className="auth-input auth-input--password"
-                    required
-                    autoComplete={isLogin ? "current-password" : "new-password"}
-                    minLength={isLogin ? 6 : 8}
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
-                  <button
-                    type="button"
-                    className="auth-eye-btn"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-                  </button>
-                </div>
-                {isRegister && (
-                  <p className="auth-hint">Min 8 characters · at least 1 letter &amp; 1 number</p>
-                )}
-              </div>
-            )}
+              )}
 
-            {/* Submit */}
-            <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? (
-                <span className="auth-spinner" />
+              {/* Submit */}
+              <button type="submit" className="auth-btn" disabled={loading}>
+                {loading ? (
+                  <span className="auth-spinner" />
+                ) : (
+                  <>
+                    {isForgot ? "Send Reset Link" : isLogin ? "Sign in to ResuScan" : "Create your account"}
+                    <ArrowRight size={17} />
+                  </>
+                )}
+                <div className="auth-btn-glow"></div>
+              </button>
+            </form>
+
+            {/* Footer */}
+            <p className="auth-footer-text">
+              {isForgot ? (
+                <>
+                  Remember it?&nbsp;
+                  <button className="auth-link" onClick={() => switchView("login")}>Sign in</button>
+                </>
+              ) : isLogin ? (
+                <>
+                  Don't have an account?&nbsp;
+                  <button className="auth-link" onClick={() => switchView("register")}>Sign up</button>
+                </>
               ) : (
                 <>
-                  {isForgot ? "Send Reset Link" : isLogin ? "Sign in" : "Create account"}
-                  <ArrowRight size={17} />
+                  Already have an account?&nbsp;
+                  <button className="auth-link" onClick={() => switchView("login")}>Sign in</button>
                 </>
               )}
-            </button>
-          </form>
+            </p>
 
-          {/* Footer */}
-          <p className="auth-footer-text">
-            {isForgot ? (
-              <>
-                Remember it?&nbsp;
-                <button className="auth-link" onClick={() => switchView("login")}>Sign in</button>
-              </>
-            ) : isLogin ? (
-              <>
-                Don't have an account?&nbsp;
-                <button className="auth-link" onClick={() => switchView("register")}>Sign up</button>
-              </>
-            ) : (
-              <>
-                Already have an account?&nbsp;
-                <button className="auth-link" onClick={() => switchView("login")}>Sign in</button>
-              </>
-            )}
-          </p>
-
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </section>
   );

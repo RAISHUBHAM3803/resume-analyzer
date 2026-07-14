@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { ArrowLeft, Clock, FileText, Target, Trophy, AlertCircle, Trash2, Calendar } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { getHistory, deleteHistory } from "../services/api";
 import "./History.css";
 
@@ -50,11 +51,28 @@ function History({ onBack }) {
     });
   };
 
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const cardVariant = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+  };
+
   return (
     <section className="history-section">
-      <div className="history-container fade-in-up">
+      <div className="history-container">
         
-        <div className="history-top-row">
+        <motion.div 
+          className="history-top-row"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
           <button className="history-back" onClick={onBack}>
             <ArrowLeft size={16} /> 
             <span>Back to Dashboard</span>
@@ -68,34 +86,44 @@ function History({ onBack }) {
               <button className="history-btn history-btn--danger" onClick={() => handleDelete('all')} disabled={isDeleting}>All Time</button>
             </div>
           </div>
-        </div>
+        </motion.div>
         
-        <div className="history-hdr">
+        <motion.div 
+          className="history-hdr"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
           <div className="history-hdr-icon"><Clock size={24} /></div>
           <h1 className="history-hdr-title">Your Analysis History</h1>
           <p className="history-hdr-desc">Track your resume improvement over time and revisit past analyses.</p>
-        </div>
+        </motion.div>
 
         {loading ? (
-          <div className="history-state fade-in">
+          <motion.div className="history-state" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="spinner"></div> 
             <p>Loading history...</p>
-          </div>
+          </motion.div>
         ) : error ? (
-          <div className="history-state history-state--error fade-in">
+          <motion.div className="history-state history-state--error" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <AlertCircle size={24} /> 
             <p>{error}</p>
-          </div>
+          </motion.div>
         ) : history.length === 0 ? (
-          <div className="history-state history-state--empty fade-in">
+          <motion.div className="history-state history-state--empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="history-state-icon"><FileText size={40} /></div>
             <h3>No past analyses found</h3>
             <p>Your analysis history will appear here once you analyze a resume.</p>
-          </div>
+          </motion.div>
         ) : (
-          <div className="history-grid">
+          <motion.div 
+            className="history-grid"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+          >
             {history.map((item, i) => (
-              <div key={item._id} className="history-card fade-in-up" style={{ animationDelay: `${0.05 * i}s` }}>
+              <motion.div key={item._id} className="history-card" variants={cardVariant}>
                 <div className="hcard-top">
                   <div className="hcard-date">
                     <Calendar size={14} />
@@ -123,9 +151,9 @@ function History({ onBack }) {
                   <Target size={16} /> 
                   <span><strong>{item.skills?.length || 0}</strong> Skills Identified</span>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </section>
