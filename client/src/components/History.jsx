@@ -123,22 +123,23 @@ function History({ onBack }) {
             <p>Your analysis history will appear here once you analyze a resume.</p>
           </motion.div>
         ) : (
-          <motion.div 
-            className="history-grid"
-            variants={staggerContainer}
-            initial="hidden"
-            animate="show"
-          >
+          <div className="history-grid">
             {history.map((item, i) => (
-              <motion.div key={item._id} className="history-card" variants={cardVariant}>
+              <motion.div 
+                key={item._id || i} 
+                className="history-card" 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05, type: "spring", stiffness: 200, damping: 20 }}
+              >
                 <div className="hcard-top">
                   <div className="hcard-date">
                     <Calendar size={14} />
-                    <span>{formatDate(item.createdAt)}</span>
+                    <span>{item.createdAt ? formatDate(item.createdAt) : "Unknown Date"}</span>
                   </div>
                   <div className={`hcard-score ${item.score >= 80 ? "score-high" : item.score >= 50 ? "score-mid" : "score-low"}`}>
                     <Trophy size={14} /> 
-                    <span>{item.score}<small>/100</small></span>
+                    <span>{item.score || 0}<small>/100</small></span>
                   </div>
                 </div>
                 
@@ -160,7 +161,7 @@ function History({ onBack }) {
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         )}
       </div>
     </section>
