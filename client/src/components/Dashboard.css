@@ -1,4 +1,4 @@
-﻿/* ===== DASHBOARD ===== */
+/* ===== DASHBOARD ===== */
 .dash-section {
   padding: calc(var(--nav-height) + 24px) 24px 80px;
   position: relative;
@@ -169,7 +169,8 @@
 .bcard--mini-scores { grid-column: 2; grid-row: 1; }
 .bcard--skills { grid-column: 1 / -1; grid-row: 2; }
 .bcard--feedback { grid-column: 1; grid-row: 3; }
-.bcard--rewriter { grid-column: 2; grid-row: 3; }
+.bcard--interview { grid-column: 2; grid-row: 3; }
+.bcard--rewriter { grid-column: 1 / -1; grid-row: 4; }
 
 .bcard__content-center {
   display: flex;
@@ -263,7 +264,8 @@
 .skills-empty--ok { color: var(--accent-green); display: flex; align-items: center; gap: 6px; font-weight: 500;}
 
 /* AI Feedback list */
-.ai-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.ai-empty { font-size: 14px; color: var(--text-muted); padding: 8px 0; }
+.ai-list { display: flex; flex-direction: column; gap: 12px; }
 .ai-item {
   display: flex;
   align-items: flex-start;
@@ -278,14 +280,18 @@
   transition: border-color var(--transition-fast);
 }
 .ai-item:hover { border-color: rgba(255,255,255,0.1); }
-.ai-bullet {
-  width: 28px; height: 28px;
-  background: rgba(245, 158, 11,0.15);
-  border-radius: var(--radius-sm);
-  display: flex; align-items: center; justify-content: center;
+.ai-num {
+  font-size: 11px;
+  font-weight: 800;
   color: var(--accent-primary);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
   flex-shrink: 0;
-  margin-top: 1px;
+  margin-top: 2px;
+  letter-spacing: 0.3px;
 }
 
 /* Interview questions */

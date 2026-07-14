@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft, Trophy, Target, Brain, Sparkles, CheckCircle2, XCircle,
   TrendingUp, FileText, Zap, Award, BarChart3, Download, MessageSquare, Info, Wand2, Copy, AlertCircle,
@@ -142,7 +142,19 @@ function Dashboard({ data, onReset }) {
     html2pdf().set(opt).from(element).save();
   };
 
-  const feedbackLines = (feedback || "").split("\n").filter(Boolean);
+  // Parse feedback — handles both "\n"-separated and inline "1. ... 2. ..." numbered formats
+  const feedbackLines = (() => {
+    const raw = (feedback || "").trim();
+    if (!raw) return [];
+    // Try splitting by newlines first
+    const byNewline = raw.split(/\n+/).map(s => s.trim()).filter(Boolean);
+    // If we only get 1 item but it contains numbered list patterns, split by them
+    if (byNewline.length <= 2) {
+      const byNumber = raw.split(/(?=\d+\.\s)/).map(s => s.trim()).filter(Boolean);
+      if (byNumber.length > 1) return byNumber;
+    }
+    return byNewline;
+  })();
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -290,43 +302,52 @@ function Dashboard({ data, onReset }) {
             </div>
           </motion.div>
 
-          {/* 4. AI Recommendations & Interview */}
+          {/* 4. Actionable Feedback — own card */}
           <motion.div className="bcard bcard--feedback" variants={cardVariant}>
             <div className="bcard__header">
               <Brain size={18} /> <span>Actionable Feedback</span>
             </div>
-            <ul className="ai-list">
-              {feedbackLines.map((line, i) => (
-                <li key={i} className="ai-item">
-                  <div className="ai-bullet"><Sparkles size={14}/></div>
-                  <span>{line.replace(/^[•-]\s*/, "")}</span>
-                </li>
-              ))}
-            </ul>
-
-            {questions && questions.length > 0 && (
-              <>
-                <div className="bcard__header" style={{ marginTop: '32px' }}>
-                  <MessageSquare size={18} /> <span>Interview Prep</span>
-                </div>
-                <div className="q-list">
-                  {questions.map((q, i) => (
-                    <div key={i} className="q-card">
-                      <div className="q-num">Q{i + 1}</div>
-                      <div className="q-text">{q}</div>
+            {feedbackLines.length === 0 ? (
+              <p className="ai-empty">No feedback available.</p>
+            ) : (
+              <div className="ai-list">
+                {feedbackLines.map((line, i) => {
+                  const clean = line.replace(/^\d+\.\s*/, "").replace(/^[•\-*]\s*/, "").trim();
+                  if (!clean) return null;
+                  return (
+                    <div key={i} className="ai-item">
+                      <div className="ai-num">0{i + 1}</div>
+                      <span>{clean}</span>
                     </div>
-                  ))}
-                </div>
-                <button 
+                  );
+                })}
+              </div>
+            )}
+          </motion.div>
+
+          {/* 5. Interview Prep — own card */}
+          {questions && questions.length > 0 && (
+            <motion.div className="bcard bcard--interview" variants={cardVariant}>
+              <div className="bcard__header">
+                <MessageSquare size={18} /> <span>Interview Prep</span>
+              </div>
+              <div className="q-list">
+                {questions.map((q, i) => (
+                  <div key={i} className="q-card">
+                    <div className="q-num">Q{i + 1}</div>
+                    <div className="q-text">{q}</div>
+                  </div>
+                ))}
+              </div>
+              <button 
                   className="dash__btn dash__btn--primary" 
                   style={{ marginTop: '16px', width: '100%', justifyContent: 'center' }}
                   onClick={() => setShowInterviewModal(true)}
                 >
                   <MessageSquare size={16} /> Start AI Mock Interview
-                </button>
-              </>
-            )}
-          </motion.div>
+              </button>
+            </motion.div>
+          )}
 
           {/* 5. AI Bullet Rewriter */}
           <motion.div className="bcard bcard--rewriter" variants={cardVariant}>
