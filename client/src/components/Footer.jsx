@@ -1,4 +1,4 @@
-﻿import { ScanSearch, ExternalLink, Github, Linkedin } from "lucide-react";
+import { ScanSearch, ExternalLink, GitBranch, Link2 } from "lucide-react";
 import "./Footer.css";
 
 function Footer() {
@@ -18,8 +18,8 @@ function Footer() {
               Practice smarter. Optimize faster. Land your dream job. The premium platform built for job seekers who take their careers seriously.
             </p>
             <div className="footer__socials">
-              <a href="#" className="footer__social-link" aria-label="GitHub"><Github size={16} /></a>
-              <a href="#" className="footer__social-link" aria-label="LinkedIn"><Linkedin size={16} /></a>
+              <a href="#" className="footer__social-link" aria-label="GitHub"><GitBranch size={16} /></a>
+              <a href="#" className="footer__social-link" aria-label="Portfolio"><Link2 size={16} /></a>
             </div>
           </div>
 
