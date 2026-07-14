@@ -2,9 +2,9 @@
 .footer {
   position: relative;
   z-index: 1;
+  background: var(--bg-primary);
   border-top: 1px solid var(--border-subtle);
-  background: var(--bg-secondary);
-  padding: 64px 24px 32px;
+  padding: 80px 24px 40px;
   margin-top: auto;
 }
 
@@ -13,7 +13,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 64px;
 }
 
 .footer__top {
@@ -25,7 +25,7 @@
 }
 
 /* Brand */
-.footer__brand { max-width: 320px; display: flex; flex-direction: column; gap: 16px; }
+.footer__brand { max-width: 400px; display: flex; flex-direction: column; gap: 20px; }
 
 .footer__logo {
   display: flex;
@@ -34,32 +34,24 @@
 }
 
 .footer__logo-icon {
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  border-radius: var(--radius-sm);
+  width: 28px; height: 28px;
+  background: transparent;
   display: flex; align-items: center; justify-content: center;
-  color: #fff;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.25);
+  color: var(--accent-primary);
 }
 
 .footer__logo-text {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.5px;
 }
 
 .footer__badge {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--accent-primary);
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  padding: 2px 6px;
-  border-radius: var(--radius-full);
+  display: none;
 }
 
-.footer__tagline { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+.footer__tagline { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 
 .footer__socials {
   display: flex;
@@ -71,24 +63,22 @@
 .footer__social-link {
   width: 36px; height: 36px;
   border-radius: 50%;
-  background: var(--bg-glass);
-  border: 1px solid var(--border-medium);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
   display: flex; align-items: center; justify-content: center;
   color: var(--text-muted);
   transition: all var(--transition-fast);
 }
 .footer__social-link:hover {
-  background: var(--bg-glass-strong);
-  border-color: var(--border-accent);
-  color: var(--accent-primary);
-  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.3);
+  color: var(--text-primary);
 }
 
 /* Nav */
-.footer__nav { display: flex; gap: 64px; flex-wrap: wrap; }
-.footer__nav-col { display: flex; flex-direction: column; gap: 16px; min-width: 140px; }
-.footer__nav-title { font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.5px; }
-.footer__nav-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.footer__nav { display: flex; gap: 120px; flex-wrap: wrap; }
+.footer__nav-col { display: flex; flex-direction: column; gap: 24px; min-width: 140px; }
+.footer__nav-title { font-size: 11px; font-weight: 800; color: var(--text-primary); text-transform: uppercase; letter-spacing: 1.5px; }
+.footer__nav-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 16px; }
 .footer__nav-link {
   font-size: 14px;
   font-weight: 500;
@@ -99,7 +89,7 @@
   gap: 6px;
   transition: color var(--transition-fast);
 }
-.footer__nav-link:hover { color: var(--accent-primary); }
+.footer__nav-link:hover { color: var(--text-primary); }
 
 /* Bottom */
 .footer__bottom {
@@ -109,19 +99,37 @@
   flex-wrap: wrap;
   gap: 16px;
   padding-top: 32px;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
 
-.footer__copyright, .footer__made-with {
+.footer__copyright {
   font-size: 13px;
   color: var(--text-muted);
 }
-.footer__made-with { display: flex; align-items: center; gap: 5px; }
-.footer__heart { color: var(--accent-red); fill: var(--accent-red); }
+.footer__made-with { 
+  display: flex; align-items: center; gap: 5px; 
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.footer__author-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--transition-fast);
+}
+.footer__author-link:hover {
+  color: var(--accent-secondary);
+}
+
+@media (max-width: 900px) {
+  .footer__nav { gap: 64px; }
+}
 
 @media (max-width: 768px) {
-  .footer__top { flex-direction: column; gap: 40px; }
+  .footer__top { flex-direction: column; gap: 48px; }
   .footer__brand { max-width: 100%; }
-  .footer__nav { gap: 40px; width: 100%; justify-content: space-between; }
+  .footer__nav { gap: 40px; width: 100%; justify-content: flex-start; }
   .footer__bottom { flex-direction: column; align-items: flex-start; }
 }
